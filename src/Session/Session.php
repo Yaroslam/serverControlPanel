@@ -61,6 +61,7 @@ class Session
     {
         $this->NullContext();
         var_dump("apply");
+        var_dump($this->chainContext);
         return $this->chainContext;
     }
 
