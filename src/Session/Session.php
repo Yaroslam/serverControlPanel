@@ -32,6 +32,7 @@ class Session
     {
         $execRes = $this->exec($cmdCommand);
         $this->ifResult = preg_match("/$ifCondition/", $execRes[$mustIn]);
+        var_dump("if ok");
         return $this;
     }
 
@@ -41,6 +42,7 @@ class Session
         {
             $this->chainContext = $this->exec($cmdCommand);
         }
+        var_dump("then ok");
         return $this;
     }
 
@@ -49,12 +51,14 @@ class Session
         if(!$this->ifResult){
             $this->chainContext = $this->exec($cmdCommand);
         }
+        var_dump("else ok");
         return $this;
     }
 
     public function apply()
     {
         $this->NullContext();
+        var_dump("apply");
         return $this->chainContext;
     }
 
