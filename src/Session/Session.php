@@ -12,13 +12,12 @@ class Session
     {
         $this->connector = new Connector($connectionType, $connectProperties);
         $this->connector->connect();
-
-
     }
 
     public function exec(string $cmdCommand)
     {
-        ssh2_exec($this->connector->getConnectionTunnel(), $cmdCommand);
+        $stream = ssh2_exec($this->connector->getConnectionTunnel(), $cmdCommand);
+        var_dump("Output: " . stream_get_contents($stream));
     }
 
     public function __destruct()
