@@ -22,10 +22,11 @@ class Session
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
+        $execRes = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
         fclose($errorStream);
         fclose($stream);
         var_dump("exec good");
-        return ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
+        return $execRes;
     }
 
 
