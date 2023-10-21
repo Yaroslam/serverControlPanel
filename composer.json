@@ -1,0 +1,17 @@
+{
+    "name": "happy/server-control-panel",
+    "type": "project",
+    "license": "mit-8",
+    "autoload": {
+        "psr-4": {
+            "Happy\\ServerControlPanel\\": "src/"
+        }
+    },
+    "require-dev": {
+        "laravel/pint": "^1.13"
+    },
+    "require": {
+        "ext-ssh2": "*",
+        "php": "^8.1"
+    }
+}
