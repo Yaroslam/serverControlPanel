@@ -24,6 +24,7 @@ class Session
         stream_set_blocking($stream, true);
         fclose($errorStream);
         fclose($stream);
+        var_dump("exec good");
         return ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
     }
 
