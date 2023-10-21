@@ -25,7 +25,7 @@ class Session
         $execRes = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
         fclose($errorStream);
         fclose($stream);
-        var_dump("exec good");
+        var_dump($execRes["output"]);
         return $execRes;
     }
 
