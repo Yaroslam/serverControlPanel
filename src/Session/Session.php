@@ -9,6 +9,7 @@ class Session
     private Connector $connector;
     private bool $ifResult;
     private array $chainContext;
+    private array $context;
 
     public function __construct(ConnectionInterface $connectionType, array $connectProperties)
     {
@@ -22,17 +23,16 @@ class Session
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
-        $execRes = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
+        $this->context = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
         fclose($errorStream);
         fclose($stream);
-        var_dump($execRes["output"]);
-        return $execRes;
+        return $this;
     }
 
 
     public function if(string $cmdCommand, string $ifCondition, string $mustIn="output")
     {
-        $execRes = $this->exec($cmdCommand);
+        $execRes = $this->exec($cmdCommand)->getExecContext();
         $this->ifResult = preg_match("/$ifCondition/", $execRes[$mustIn]);
         var_dump("if ok");
         return $this;
@@ -42,7 +42,7 @@ class Session
     {
         if($this->ifResult)
         {
-            $this->chainContext = $this->exec($cmdCommand);
+            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
         }
         var_dump("then ok");
         return $this;
@@ -51,7 +51,7 @@ class Session
     public function else(string $cmdCommand)
     {
         if(!$this->ifResult){
-            $this->chainContext = $this->exec($cmdCommand);
+            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
         }
         var_dump("else ok");
         return $this;
@@ -67,6 +67,12 @@ class Session
     private function NullContext()
     {
         unset($this->ifResult);
+        unset($this->context);
+    }
+
+    public function getExecContext()
+    {
+        return $this->context;
     }
 
     public function __destruct()
