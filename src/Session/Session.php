@@ -24,6 +24,7 @@ class Session
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
         $this->context = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
+        var_dump($this->context["output"]);
         fclose($errorStream);
         fclose($stream);
         return $this;
@@ -61,14 +62,12 @@ class Session
     {
         $this->NullContext();
         var_dump("apply");
-        var_dump($this->chainContext);
         return $this->chainContext;
     }
 
     private function NullContext()
     {
         unset($this->ifResult);
-        unset($this->context);
     }
 
     public function getExecContext()
