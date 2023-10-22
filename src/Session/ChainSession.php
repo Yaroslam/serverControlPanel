@@ -23,7 +23,7 @@ class ChainSession extends AbstractSession
 //        stream_set_blocking($errorStream, true);
 //        stream_set_blocking($this->shell, true);
         $stream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDIO);
-        $this->chainContext = ["output" => $stream, "error" => stream_get_contents($errorStream)];
+        $this->chainContext = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
         var_dump($this->chainContext["output"]);
         var_dump($this->chainContext["error"], "err");
         return $this;
