@@ -13,6 +13,7 @@ class ChainSession extends AbstractSession
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
+        var_dump($this->shell);
         return $this;
     }
     public function exec(string $cmdCommand)
