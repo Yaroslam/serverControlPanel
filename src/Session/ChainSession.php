@@ -8,16 +8,19 @@ class ChainSession extends AbstractSession
 
     private bool $ifResult;
     private array $chainContext;
-
     private $shell;
 
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
+        return $this;
     }
     public function exec(string $cmdCommand)
     {
         fwrite($this->shell, $cmdCommand);
+        $errorStream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDERR);
+        $stream = fgets($this->shell);
+        $this->chainContext = ["output" => $stream, "error" => stream_get_contents($errorStream)];
         return $this;
     }
 
@@ -25,7 +28,6 @@ class ChainSession extends AbstractSession
     {
         $execRes = $this->exec($cmdCommand)->getExecContext();
         $this->ifResult = preg_match("/$ifCondition/", $execRes[$mustIn]);
-        var_dump("if ok");
         return $this;
     }
 
@@ -35,7 +37,6 @@ class ChainSession extends AbstractSession
         {
             $this->chainContext = $this->exec($cmdCommand)->getExecContext();
         }
-        var_dump("then ok");
         return $this;
     }
 
@@ -44,7 +45,6 @@ class ChainSession extends AbstractSession
         if(!$this->ifResult){
             $this->chainContext = $this->exec($cmdCommand)->getExecContext();
         }
-        var_dump("else ok");
         return $this;
     }
 
