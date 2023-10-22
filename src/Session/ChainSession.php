@@ -17,15 +17,13 @@ class ChainSession extends AbstractSession
     }
     public function exec(string $cmdCommand)
     {
-        fwrite($this->shell, $cmdCommand);
+        fwrite($this->shell, $cmdCommand . PHP_EOL);
         $errorStream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDERR);
-//        stream_set_blocking($errorStream, true);
-//        stream_set_blocking($this->shell, true);
-//        $stream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDIO);
+        stream_set_blocking($errorStream, true);
+        stream_set_blocking($this->shell, true);
         $output_stream = '';
         while($output_streams = fgets($this->shell)){
             $output_stream .= $output_streams;
-            flush();# Limpa o conteúdo para a próxima interação
         }
         $output_array = $output_stream;
 
