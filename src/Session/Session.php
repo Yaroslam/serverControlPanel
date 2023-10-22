@@ -4,18 +4,9 @@ namespace Happy\ServerControlPanel\Session;
 use Happy\ServerControlPanel\Session\Connection\ConnectionInterface;
 use Happy\ServerControlPanel\Session\Connection\Connector;
 
-class Session
+class Session extends AbstractSession
 {
-    private Connector $connector;
-    private bool $ifResult;
-    private array $chainContext;
     private array $context;
-
-    public function __construct(ConnectionInterface $connectionType, array $connectProperties)
-    {
-        $this->connector = new Connector($connectionType, $connectProperties);
-        $this->connector->connect();
-    }
 
     public function exec(string $cmdCommand)
     {
@@ -31,52 +22,16 @@ class Session
     }
 
 
-    public function if(string $cmdCommand, string $ifCondition, string $mustIn="output")
-    {
-        $execRes = $this->exec($cmdCommand)->getExecContext();
-        $this->ifResult = preg_match("/$ifCondition/", $execRes[$mustIn]);
-        var_dump("if ok");
-        return $this;
-    }
-
-    public function then(string $cmdCommand)
-    {
-        if($this->ifResult)
-        {
-            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
-        }
-        var_dump("then ok");
-        return $this;
-    }
-
-    public function else(string $cmdCommand)
-    {
-        if(!$this->ifResult){
-            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
-        }
-        var_dump("else ok");
-        return $this;
-    }
-
     public function apply()
     {
-        $this->NullContext();
-        var_dump("apply");
-        return $this->chainContext;
+        return $this->context;
     }
 
-    private function NullContext()
-    {
-        unset($this->ifResult);
-    }
 
     public function getExecContext()
     {
         return $this->context;
     }
 
-    public function __destruct()
-    {
-        $this->connector->disconnect();
-    }
+
 }
