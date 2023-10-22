@@ -21,6 +21,7 @@ class ChainSession extends AbstractSession
         $errorStream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDERR);
         $stream = fgets($this->shell);
         $this->chainContext = ["output" => $stream, "error" => stream_get_contents($errorStream)];
+        var_dump($this->chainContext["output"]);
         return $this;
     }
 
