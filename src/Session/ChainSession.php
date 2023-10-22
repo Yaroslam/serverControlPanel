@@ -22,7 +22,7 @@ class ChainSession extends AbstractSession
 //        stream_set_blocking($errorStream, true);
 //        stream_set_blocking($this->shell, true);
 //        $stream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDIO);
-
+        $output_stream = '';
         while($output_streams = fgets($this->shell)){
             $output_stream .= $output_streams;
             flush();# Limpa o conteúdo para a próxima interação
