@@ -53,6 +53,7 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
+
     public function apply()
     {
         return $this->chainContext;
