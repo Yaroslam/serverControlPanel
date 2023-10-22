@@ -13,7 +13,6 @@ class ChainSession extends AbstractSession
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
-        var_dump($this->shell);
         return $this;
     }
     public function exec(string $cmdCommand)
@@ -22,8 +21,18 @@ class ChainSession extends AbstractSession
         $errorStream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDERR);
 //        stream_set_blocking($errorStream, true);
 //        stream_set_blocking($this->shell, true);
-        $stream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDIO);
-        $this->chainContext = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
+//        $stream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDIO);
+
+        while($output_streams = fgets($this->shell)){
+            $output_stream .= $output_streams;
+            flush();# Limpa o conteúdo para a próxima interação
+        }
+        $output_array = $output_stream;
+
+
+
+
+        $this->chainContext = ["output" => $output_array, "error" => stream_get_contents($errorStream)];
         var_dump($this->chainContext["output"]);
         var_dump($this->chainContext["error"], "err");
         return $this;
