@@ -12,15 +12,12 @@ class ChainSession extends AbstractSession
 
     public function initChain()
     {
-	var_dump("init");
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
         return $this;
     }
     public function exec(string $cmdCommand)
     {
-	var_dump("exec " . $cmdCommand);
         fwrite($this->shell, $cmdCommand . PHP_EOL);
-	var_dump("sleep");
         sleep(1);
 	$outLine = '';
 	while($out = fgets($this->shell))
@@ -31,6 +28,7 @@ class ChainSession extends AbstractSession
         var_dump($this->chainContext["output"]);
         return $this;
     }
+
 
     public function if(string $cmdCommand, string $ifCondition, string $mustIn="output")
     {
