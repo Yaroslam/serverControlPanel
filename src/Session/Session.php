@@ -1,8 +1,6 @@
 <?php
-namespace Happy\ServerControlPanel\Session;
 
-use Happy\ServerControlPanel\Session\Connection\ConnectionInterface;
-use Happy\ServerControlPanel\Session\Connection\Connector;
+namespace Happy\ServerControlPanel\Session;
 
 class Session extends AbstractSession
 {
@@ -14,24 +12,20 @@ class Session extends AbstractSession
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
-        $this->context = ["output" => stream_get_contents($stream), "error" => stream_get_contents($errorStream)];
-        var_dump($this->context["output"]);
+        $this->context = ['output' => stream_get_contents($stream), 'error' => stream_get_contents($errorStream)];
         fclose($errorStream);
         fclose($stream);
+
         return $this;
     }
-
 
     public function apply()
     {
         return $this->context;
     }
 
-
     public function getExecContext()
     {
         return $this->context;
     }
-
-
 }

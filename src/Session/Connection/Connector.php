@@ -14,11 +14,10 @@ class Connector
 
     private array $connectProperties;
 
-
     public function __construct(ConnectionInterface $connection, array $connectProperties)
     {
-        $this->port = $connectProperties["port"];
-        $this->host = $connectProperties["host"];
+        $this->port = $connectProperties['port'];
+        $this->host = $connectProperties['host'];
         $this->connectProperties = $connectProperties;
         $this->connection = $connection;
     }
@@ -26,7 +25,7 @@ class Connector
     public function connect()
     {
         $this->connectionTunnel = ssh2_connect($this->host, $this->port);
-        $this->connection->connect($this->connectionTunnel, $this->connectProperties["properties"]);
+        $this->connection->connect($this->connectionTunnel, $this->connectProperties['properties']);
     }
 
     public function getConnectionTunnel()
@@ -38,6 +37,4 @@ class Connector
     {
         return 0;
     }
-
-
 }
