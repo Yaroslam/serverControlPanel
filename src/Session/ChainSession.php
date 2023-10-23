@@ -20,11 +20,10 @@ class ChainSession extends AbstractSession
         fwrite($this->shell, $cmdCommand . PHP_EOL);
         $errorStream = ssh2_fetch_stream($this->shell, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
-        stream_set_blocking($this->shell, true);
 
 
-
-        $this->chainContext = ["output" => stream_get_contents($this->shell), "error" => stream_get_contents($errorStream)];
+        sleep(1);
+        $this->chainContext = ["output" => fgets($this->shell), "error" => stream_get_contents($errorStream)];
         var_dump($this->chainContext["output"]);
         var_dump($this->chainContext["error"], "err");
         return $this;
