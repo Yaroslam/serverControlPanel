@@ -1,0 +1,35 @@
+<?php
+
+namespace Happy\ServerControlPanel\Session\Commands;
+
+abstract class BaseCommand
+{
+    protected string $commandText;
+
+    protected CommandClasses $commandType;
+
+    public function getCommandName()
+    {
+        return str_replace('Command', '', $this::class);
+    }
+
+    public function getCommandType()
+    {
+        return $this->commandType;
+    }
+
+    abstract public function execution();
+}
+// типы команд: single->exec, block->then,else,while,case, operator->if,switch, Non->заглушка
+// блоки хранят массив других команд, операторы хранят условия выполнения команд и другие команды
+// топ левел команды: if, exec, while, switch
+// команды нижних уровней: then, else, case, exec
+// зависимость оператор->тело if->then, if->else, while->all, switch->case
+//  then->all, else->all, case->all, exec->none
+// выполнение команд:
+//  1)вызываем execution верхних команд, метод execution операторов вызывает
+//
+//
+//
+//
+//
