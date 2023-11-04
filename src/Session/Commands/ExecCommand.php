@@ -19,7 +19,7 @@ class ExecCommand extends BaseCommand
         while ($out = fgets($shell)) {
             $outLine .= $out."\n";
         }
-
+        var_dump($outLine);
         //        return $outLine;
     }
 }

@@ -53,35 +53,52 @@ class ChainSession extends AbstractSession
     public function if(string $cmdCommand, string $ifStatment)
     {
         $this->chainCommands[] = new IfCommand($cmdCommand, $ifStatment);
+
+        return $this;
     }
 
     public function endIf()
     {
         $this->lastCommand = new NoneCommand();
+
+        return $this;
+
     }
 
     public function then()
     {
         $this->lastOperator = $this->lastCommand;
         $this->lastCommand = new ThenCommand();
+
+        return $this;
+
     }
 
     public function endThen()
     {
         $this->lastOperator->addToBody($this->lastCommand, 'Then');
         $this->lastCommand = $this->lastOperator;
+
+        return $this;
+
     }
 
     public function else()
     {
         $this->lastOperator = $this->lastCommand;
         $this->lastCommand = new ElseCommand();
+
+        return $this;
+
     }
 
     public function endElse()
     {
         $this->lastOperator->addToBody(new ElseCommand(), 'else');
         $this->lastCommand = $this->lastOperator;
+
+        return $this;
+
     }
 
     public function apply()
@@ -89,6 +106,9 @@ class ChainSession extends AbstractSession
         foreach ($this->chainCommands as $command) {
             $command->execution($this->shell);
         }
+
+        return $this;
+
     }
 
     public function getExecContext()
