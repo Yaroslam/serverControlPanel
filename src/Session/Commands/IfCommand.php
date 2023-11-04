@@ -28,7 +28,7 @@ class IfCommand extends BaseCommand
             $outLine .= $out."\n";
         }
 
-        if (preg_match($this->ifStatment, $outLine)) {
+        if (preg_match("/$this->ifStatment/", $outLine)) {
             $this->ifResult = true;
             $this->body['then']->execution($shell);
         } else {
