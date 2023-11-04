@@ -10,14 +10,14 @@ namespace Happy\ServerControlPanel\Session;
 
 use Happy\ServerControlPanel\Session\Commands\BaseCommand;
 use Happy\ServerControlPanel\Session\Commands\CommandClasses;
+use Happy\ServerControlPanel\Session\Commands\ElseCommand;
 use Happy\ServerControlPanel\Session\Commands\ExecCommand;
 use Happy\ServerControlPanel\Session\Commands\IfCommand;
 use Happy\ServerControlPanel\Session\Commands\NoneCommand;
+use Happy\ServerControlPanel\Session\Commands\ThenCommand;
 
 class ChainSession extends AbstractSession
 {
-    private bool $ifResult;
-
     private array $chainContext;
 
     private $shell;
@@ -26,24 +26,12 @@ class ChainSession extends AbstractSession
 
     private BaseCommand $lastCommand;
 
+    private BaseCommand $lastOperator;
+
     public function initChain()
     {
         $this->lastCommand = new NoneCommand();
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
-
-        return $this;
-    }
-
-    private function realExec(string $cmdCommand)
-    {
-        fwrite($this->shell, $cmdCommand.PHP_EOL);
-        sleep(1);
-        $outLine = '';
-        while ($out = fgets($this->shell)) {
-            $outLine .= $out."\n";
-        }
-        $this->chainContext = ['output' => $outLine];
-        var_dump($this->chainContext['output']);
 
         return $this;
     }
@@ -54,82 +42,53 @@ class ChainSession extends AbstractSession
             $this->lastCommand->getCommandType() == CommandClasses::Single) {
             $this->chainCommands[] = new ExecCommand($cmdCommand);
         } elseif ($this->lastCommand->getCommandType() == CommandClasses::Block) {
-            $this->lastCommand->fillBody(new ExecCommand($cmdCommand));
+            $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         } else {
             var_dump('command chain order error');
         }
-    }
 
-    private function realIf(string $cmdCommand, string $ifCondition, string $mustIn = 'output')
-    {
-        $execRes = $this->exec($cmdCommand)->getExecContext();
-        $this->ifResult = preg_match("/$ifCondition/", $execRes[$mustIn]);
         return $this;
     }
 
-    public function if(string $cmdCommand, string $ifStatment, $ifOperator)
+    public function if(string $cmdCommand, string $ifStatment)
     {
-        if ($this->lastCommand->getCommandType() != CommandClasses::Operator) {
-            $this->chainCommands[] = new IfCommand($cmdCommand, $ifOperator, $ifStatment);
-        } else {
-            var_dump('command chain order error');
-        }
+        $this->chainCommands[] = new IfCommand($cmdCommand, $ifStatment);
     }
 
     public function endIf()
     {
-        if ($this->lastCommand->getCommandName() == 'If') {
-            $this->lastCommand = new NoneCommand();
-        } else {
-            var_dump('command chain order error');
-        }
+        $this->lastCommand = new NoneCommand();
     }
 
-    private function realThen(string $cmdCommand)
+    public function then()
     {
-        if ($this->ifResult) {
-            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
-        }
-
-        return $this;
-    }
-
-    public function then(string $cmdCommand)
-    {
-        if ($this->lastCommand->getCommandName() == 'If') {
-            $this->lastCommand
-        } else {
-            var_dump('command chain order error');
-        }
+        $this->lastOperator = $this->lastCommand;
+        $this->lastCommand = new ThenCommand();
     }
 
     public function endThen()
     {
-
+        $this->lastOperator->addToBody($this->lastCommand, 'Then');
+        $this->lastCommand = $this->lastOperator;
     }
 
-    private function realElse(string $cmdCommand)
+    public function else()
     {
-        if (! $this->ifResult) {
-            $this->chainContext = $this->exec($cmdCommand)->getExecContext();
-        }
-
-        return $this;
-    }
-
-    public function else(string $cmdCommand)
-    {
-
+        $this->lastOperator = $this->lastCommand;
+        $this->lastCommand = new ElseCommand();
     }
 
     public function endElse()
     {
-
+        $this->lastOperator->addToBody(new ElseCommand(), 'else');
+        $this->lastCommand = $this->lastOperator;
     }
 
     public function apply()
     {
-        return $this->chainContext;
+        foreach ($this->chainCommands as $command) {
+            $command->execution($this->shell);
+        }
     }
 
     public function getExecContext()

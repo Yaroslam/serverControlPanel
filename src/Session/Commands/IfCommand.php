@@ -6,29 +6,39 @@ class IfCommand extends BaseCommand
 {
     private array $body;
 
-    private $ifOperator;
-
     private $ifStatment;
+
+    private $ifResult;
 
     protected CommandClasses $commandType = CommandClasses::Operator;
 
-    public function __construct(string $cmdText, $ifStatment, $ifOperator)
+    public function __construct(string $cmdText, $ifStatment)
     {
         $this->body = [];
         $this->commandText = $cmdText;
-        $this->ifOperator = $cmdText;
-        $this->ifStatment = $cmdText;
+        $this->ifStatment = $ifStatment;
     }
 
-    public function execution()
+    public function execution($shell)
     {
-        foreach ($this->body as $command) {
-            yield from $command->execution();
+        fwrite($shell, $this->commandText.PHP_EOL);
+        sleep(1);
+        $outLine = '';
+        while ($out = fgets($shell)) {
+            $outLine .= $out."\n";
+        }
+
+        if (preg_match($this->ifStatment, $outLine)) {
+            $this->ifResult = true;
+            $this->body['then']->execution($shell);
+        } else {
+            $this->ifResult = false;
+            $this->body['else']->execution($shell);
         }
     }
 
-    public function addToBody(BaseCommand $command)
+    public function addToBody(BaseCommand $command, $thenOrElse)
     {
-        $this->body[] = $command;
+        $this->body[$thenOrElse] = $command;
     }
 }

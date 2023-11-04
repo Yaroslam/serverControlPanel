@@ -18,7 +18,7 @@ abstract class BaseCommand
         return $this->commandType;
     }
 
-    abstract public function execution();
+    abstract public function execution($shell);
 }
 // типы команд: single->exec, block->then,else,while,case, operator->if,switch, Non->заглушка
 // блоки хранят массив других команд, операторы хранят условия выполнения команд и другие команды

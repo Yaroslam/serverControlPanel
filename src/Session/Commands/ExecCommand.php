@@ -11,8 +11,15 @@ class ExecCommand extends BaseCommand
         $this->commandText = $cmdText;
     }
 
-    public function execution()
+    public function execution($shell)
     {
-        return $this->commandText;
+        fwrite($shell, $this->commandText.PHP_EOL);
+        sleep(1);
+        $outLine = '';
+        while ($out = fgets($shell)) {
+            $outLine .= $out."\n";
+        }
+
+        //        return $outLine;
     }
 }

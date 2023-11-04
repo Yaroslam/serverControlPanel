@@ -13,15 +13,10 @@ class ElseCommand extends BaseCommand
         $this->body = [];
     }
 
-    public function execution()
+    public function execution($shell)
     {
         foreach ($this->body as $command) {
-            $execRes = $command->execution();
-            if (gettype($execRes) == 'string') {
-                yield $execRes;
-            } else {
-                yield from $execRes;
-            }
+            $command->execute($shell);
         }
     }
 
