@@ -52,7 +52,9 @@ class ChainSession extends AbstractSession
 
     public function if(string $cmdCommand, string $ifStatment)
     {
-        $this->chainCommands[] = new IfCommand($cmdCommand, $ifStatment);
+        $newIf = new IfCommand($cmdCommand, $ifStatment);
+        $this->chainCommands[] = $newIf;
+        $this->lastCommand = $newIf;
 
         return $this;
     }
