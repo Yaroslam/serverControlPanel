@@ -30,6 +30,7 @@ class IfCommand extends BaseCommand
 
         if (preg_match("/$this->ifStatment/", $outLine)) {
             $this->ifResult = true;
+            var_dump($this->body);
             $this->body['then']->execution($shell);
         } else {
             $this->ifResult = false;
