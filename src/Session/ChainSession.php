@@ -48,6 +48,7 @@ class ChainSession extends AbstractSession
         } else {
             $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         }
+        var_dump($this->deepLevel);
 
         return $this;
     }
@@ -65,6 +66,7 @@ class ChainSession extends AbstractSession
         }
         $this->deepLevel += 1;
         $this->operatorsGraph[$this->deepLevel] = $this->lastCommand;
+        var_dump($this->deepLevel);
 
         return $this;
     }
@@ -74,6 +76,7 @@ class ChainSession extends AbstractSession
         $this->lastCommand = new NoneCommand();
         $this->lastOperator = $this->operatorsGraph[$this->deepLevel - 1] != null ? $this->operatorsGraph[$this->deepLevel - 1] : new NoneCommand();
         $this->deepLevel -= 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -85,6 +88,7 @@ class ChainSession extends AbstractSession
         $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ThenCommand();
         $this->deepLevel += 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -93,10 +97,10 @@ class ChainSession extends AbstractSession
     public function endThen()
     {
         var_dump($this->lastCommand->getCommandName());
-        var_dump($this->deepLevel);
         $this->lastOperator->addToBody($this->operatorsGraph[$this->deepLevel - 1], 'then');
         $this->lastCommand = $this->lastOperator;
         $this->deepLevel -= 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -107,6 +111,7 @@ class ChainSession extends AbstractSession
         $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ElseCommand();
         $this->deepLevel += 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -117,6 +122,7 @@ class ChainSession extends AbstractSession
         $this->lastOperator->addToBody(new ElseCommand(), 'else');
         $this->lastCommand = $this->lastOperator;
         $this->deepLevel -= 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
