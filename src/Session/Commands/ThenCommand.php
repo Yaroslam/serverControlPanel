@@ -15,8 +15,9 @@ class ThenCommand extends BaseCommand
 
     public function execution($shell)
     {
+        var_dump($shell);
         foreach ($this->body as $command) {
-            var_dump($command->commandText);
+            var_dump(1212323423424);
             $command->execution($shell);
         }
     }
