@@ -100,7 +100,6 @@ class ChainSession extends AbstractSession
         $this->lastOperator->addToBody($this->operatorsGraph[$this->deepLevel], 'then');
         $this->lastCommand = $this->lastOperator;
         var_dump($this->deepLevel);
-        var_dump('add then');
 
         return $this;
 
@@ -130,6 +129,7 @@ class ChainSession extends AbstractSession
 
     public function apply()
     {
+        var_dump($this->operatorsGraph);
         foreach ($this->chainCommands as $command) {
             $command->execution($this->shell);
         }
