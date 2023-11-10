@@ -51,14 +51,14 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
-    public function if(string $cmdCommand, string $ifStatment)
+    public function if(string $cmdCommand, string $ifStatement)
     {
         if ($this->deepLevel == 0) {
-            $newIf = new IfCommand($cmdCommand, $ifStatment);
+            $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->chainCommands[] = $newIf;
             $this->lastCommand = $newIf;
         } else {
-            $newIf = new IfCommand($cmdCommand, $ifStatment);
+            $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->lastCommand->addToBody($newIf);
             $this->lastCommand = $newIf;
         }
@@ -120,6 +120,7 @@ class ChainSession extends AbstractSession
 
     public function apply()
     {
+        var_dump($this->chainCommands);
         foreach ($this->chainCommands as $command) {
             $command->execution($this->shell);
         }
