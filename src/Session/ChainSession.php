@@ -96,11 +96,11 @@ class ChainSession extends AbstractSession
 
     public function endThen()
     {
-        var_dump($this->lastCommand->getCommandName());
         $this->deepLevel -= 1;
         $this->lastOperator->addToBody($this->operatorsGraph[$this->deepLevel], 'then');
         $this->lastCommand = $this->lastOperator;
         var_dump($this->deepLevel);
+        var_dump('add then');
 
         return $this;
 
