@@ -16,7 +16,7 @@ class ElseCommand extends BaseCommand
     public function execution($shell)
     {
         foreach ($this->body as $command) {
-            $command->execute($shell);
+            $command->execution($shell);
         }
     }
 
