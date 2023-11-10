@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaroslam\ServerControlPanel\Session;
+namespace Yaroslam\SSH2\Session;
 
 use Yaroslam\ServerControlPanel\Session\Connection\ConnectionInterface;
 use Yaroslam\ServerControlPanel\Session\Connection\Connector;

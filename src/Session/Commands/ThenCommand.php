@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaroslam\ServerControlPanel\Session\Commands;
+namespace Yaroslam\SSH2\Session\Commands;
 
 class ThenCommand extends BaseCommand
 {

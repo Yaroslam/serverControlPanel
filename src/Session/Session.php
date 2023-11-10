@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaroslam\ServerControlPanel\Session;
+namespace Yaroslam\SSH2\Session;
 
 class Session extends AbstractSession
 {

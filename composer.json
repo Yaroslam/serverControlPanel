@@ -4,7 +4,7 @@
     "license": "mit-8",
     "autoload": {
         "psr-4": {
-            "Yaroslam\\ServerControlPanel\\": "src/"
+            "Yaroslam\\SSH2\\": "src/"
         }
     },
     "require-dev": {

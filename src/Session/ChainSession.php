@@ -8,12 +8,12 @@ namespace Yaroslam\ServerControlPanel\Session;
 //  3)глобальный и локальный контекст выполнения
 //  4)очистка контекста от введенных команд
 
-use Yaroslam\ServerControlPanel\Session\Commands\BaseCommand;
-use Yaroslam\ServerControlPanel\Session\Commands\ElseCommand;
-use Yaroslam\ServerControlPanel\Session\Commands\ExecCommand;
-use Yaroslam\ServerControlPanel\Session\Commands\IfCommand;
-use Yaroslam\ServerControlPanel\Session\Commands\NoneCommand;
-use Yaroslam\ServerControlPanel\Session\Commands\ThenCommand;
+use Yaroslam\SSH2\Session\Commands\BaseCommand;
+use Yaroslam\SSH2\Session\Commands\ElseCommand;
+use Yaroslam\SSH2\Session\Commands\ExecCommand;
+use Yaroslam\SSH2\Session\Commands\IfCommand;
+use Yaroslam\SSH2\Session\Commands\NoneCommand;
+use Yaroslam\SSH2\Session\Commands\ThenCommand;
 
 class ChainSession extends AbstractSession
 {

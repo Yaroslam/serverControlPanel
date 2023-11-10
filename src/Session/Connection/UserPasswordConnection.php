@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaroslam\ServerControlPanel\Session\Connection;
+namespace Yaroslam\SSH2\Session\Connection;
 
 class UserPasswordConnection implements ConnectionInterface
 {
