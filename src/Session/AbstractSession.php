@@ -2,8 +2,8 @@
 
 namespace Yaroslam\SSH2\Session;
 
-use Yaroslam\ServerControlPanel\Session\Connection\ConnectionInterface;
-use Yaroslam\ServerControlPanel\Session\Connection\Connector;
+use Yaroslam\SSH2\Session\Connection\ConnectionInterface;
+use Yaroslam\SSH2\Session\Connection\Connector;
 
 abstract class AbstractSession
 {
