@@ -1,5 +1,5 @@
 {
-    "name": "yaroslam/server-control-panel",
+    "name": "yaroslam/ssh2",
     "type": "project",
     "license": "mit-8",
     "autoload": {
