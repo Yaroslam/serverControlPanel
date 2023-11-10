@@ -50,9 +50,9 @@ class ChainSession extends AbstractSession
         if ($this->deepLevel == 0) {
             $this->chainCommands[] = new ExecCommand($cmdCommand);
         } else {
+            $this->blockGraph[$this->currBlock]->addToBody(new ExecCommand($cmdCommand));
             var_dump($this->currBlock);
             var_dump($this->blockGraph[$this->currBlock]);
-            $this->blockGraph[$this->currBlock]->addToBody(new ExecCommand($cmdCommand));
         }
         var_dump($this->deepLevel);
 
