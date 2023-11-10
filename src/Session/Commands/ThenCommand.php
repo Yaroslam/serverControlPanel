@@ -1,6 +1,6 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session\Commands;
+namespace Yaroslam\ServerControlPanel\Session\Commands;
 
 class ThenCommand extends BaseCommand
 {

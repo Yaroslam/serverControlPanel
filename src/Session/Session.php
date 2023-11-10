@@ -1,6 +1,6 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session;
+namespace Yaroslam\ServerControlPanel\Session;
 
 class Session extends AbstractSession
 {

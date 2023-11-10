@@ -1,6 +1,6 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session\Connection;
+namespace Yaroslam\ServerControlPanel\Session\Connection;
 
 class NoneConnection implements ConnectionInterface
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session;
+namespace Yaroslam\ServerControlPanel\Session;
 
-use Happy\ServerControlPanel\Session\Connection\ConnectionInterface;
-use Happy\ServerControlPanel\Session\Connection\Connector;
+use Yaroslam\ServerControlPanel\Session\Connection\ConnectionInterface;
+use Yaroslam\ServerControlPanel\Session\Connection\Connector;
 
 abstract class AbstractSession
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session\Commands;
+namespace Yaroslam\ServerControlPanel\Session\Commands;
 
 class ExecCommand extends BaseCommand
 {
@@ -13,7 +13,7 @@ class ExecCommand extends BaseCommand
 
     public function execution($shell)
     {
-        var_dump('exec '.$this->commandText);
+        var_dump("exec ".$this->commandText);
         fwrite($shell, $this->commandText.PHP_EOL);
         sleep(1);
         $outLine = '';

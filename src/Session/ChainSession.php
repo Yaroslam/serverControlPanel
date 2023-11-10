@@ -1,6 +1,6 @@
 <?php
 
-namespace Happy\ServerControlPanel\Session;
+namespace Yaroslam\ServerControlPanel\Session;
 
 // TODO:
 //  1)сделать иннер и реал действия
@@ -8,12 +8,12 @@ namespace Happy\ServerControlPanel\Session;
 //  3)глобальный и локальный контекст выполнения
 //  4)очистка контекста от введенных команд
 
-use Happy\ServerControlPanel\Session\Commands\BaseCommand;
-use Happy\ServerControlPanel\Session\Commands\ElseCommand;
-use Happy\ServerControlPanel\Session\Commands\ExecCommand;
-use Happy\ServerControlPanel\Session\Commands\IfCommand;
-use Happy\ServerControlPanel\Session\Commands\NoneCommand;
-use Happy\ServerControlPanel\Session\Commands\ThenCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\BaseCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\ElseCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\ExecCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\IfCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\NoneCommand;
+use Yaroslam\ServerControlPanel\Session\Commands\ThenCommand;
 
 class ChainSession extends AbstractSession
 {

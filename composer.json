@@ -1,10 +1,10 @@
 {
-    "name": "happy/server-control-panel",
+    "name": "yaroslam/server-control-panel",
     "type": "project",
     "license": "mit-8",
     "autoload": {
         "psr-4": {
-            "Happy\\ServerControlPanel\\": "src/"
+            "Yaroslam\\ServerControlPanel\\": "src/"
         }
     },
     "require-dev": {

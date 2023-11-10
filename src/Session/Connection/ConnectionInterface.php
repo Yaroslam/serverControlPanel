@@ -1,5 +1,5 @@
 <?php
-namespace Happy\ServerControlPanel\Session\Connection;
+namespace Yaroslam\ServerControlPanel\Session\Connection;
 interface ConnectionInterface
 {
     public function connect($connection, array $connectProperties);
