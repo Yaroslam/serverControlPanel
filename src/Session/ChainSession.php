@@ -9,7 +9,6 @@ namespace Happy\ServerControlPanel\Session;
 //  4)очистка контекста от введенных команд
 
 use Happy\ServerControlPanel\Session\Commands\BaseCommand;
-use Happy\ServerControlPanel\Session\Commands\CommandClasses;
 use Happy\ServerControlPanel\Session\Commands\ElseCommand;
 use Happy\ServerControlPanel\Session\Commands\ExecCommand;
 use Happy\ServerControlPanel\Session\Commands\IfCommand;
@@ -28,23 +27,23 @@ class ChainSession extends AbstractSession
 
     private BaseCommand $lastOperator;
 
+    private int $deepLevel;
+
     public function initChain()
     {
         $this->lastCommand = new NoneCommand();
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
+        $this->deepLevel = 0;
 
         return $this;
     }
 
     public function exec(string $cmdCommand)
     {
-        if ($this->lastCommand->getCommandType() == CommandClasses::None ||
-            $this->lastCommand->getCommandType() == CommandClasses::Single) {
+        if ($this->deepLevel == 0) {
             $this->chainCommands[] = new ExecCommand($cmdCommand);
-        } elseif ($this->lastCommand->getCommandType() == CommandClasses::Block) {
-            $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         } else {
-            var_dump('command chain order error');
+            $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         }
 
         return $this;
@@ -52,9 +51,16 @@ class ChainSession extends AbstractSession
 
     public function if(string $cmdCommand, string $ifStatment)
     {
-        $newIf = new IfCommand($cmdCommand, $ifStatment);
-        $this->chainCommands[] = $newIf;
-        $this->lastCommand = $newIf;
+        if ($this->deepLevel == 0) {
+            $newIf = new IfCommand($cmdCommand, $ifStatment);
+            $this->chainCommands[] = $newIf;
+            $this->lastCommand = $newIf;
+        } else {
+            $newIf = new IfCommand($cmdCommand, $ifStatment);
+            $this->lastCommand->addToBody($newIf);
+            $this->lastCommand = $newIf;
+        }
+        $this->deepLevel += 1;
 
         return $this;
     }
@@ -62,6 +68,8 @@ class ChainSession extends AbstractSession
     public function endIf()
     {
         $this->lastCommand = new NoneCommand();
+        $this->lastOperator = new NoneCommand();
+        $this->deepLevel -= 1;
 
         return $this;
 
@@ -71,6 +79,7 @@ class ChainSession extends AbstractSession
     {
         $this->lastOperator = $this->lastCommand;
         $this->lastCommand = new ThenCommand();
+        $this->deepLevel += 1;
 
         return $this;
 
@@ -81,6 +90,7 @@ class ChainSession extends AbstractSession
         var_dump($this->lastCommand->getCommandName());
         $this->lastOperator->addToBody($this->lastCommand, 'then');
         $this->lastCommand = $this->lastOperator;
+        $this->deepLevel -= 1;
 
         return $this;
 
@@ -90,6 +100,7 @@ class ChainSession extends AbstractSession
     {
         $this->lastOperator = $this->lastCommand;
         $this->lastCommand = new ElseCommand();
+        $this->deepLevel += 1;
 
         return $this;
 
@@ -99,6 +110,7 @@ class ChainSession extends AbstractSession
     {
         $this->lastOperator->addToBody(new ElseCommand(), 'else');
         $this->lastCommand = $this->lastOperator;
+        $this->deepLevel -= 1;
 
         return $this;
 
