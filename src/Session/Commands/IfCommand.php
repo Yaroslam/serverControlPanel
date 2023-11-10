@@ -31,7 +31,6 @@ class IfCommand extends BaseCommand
         if (preg_match("/$this->ifStatment/", $outLine)) {
             $this->ifResult = true;
             $this->body['then']->execution($shell);
-            var_dump($this->body['then']);
             var_dump('true '.$this->commandText.' '.$this->ifStatment);
         } else {
             $this->ifResult = false;

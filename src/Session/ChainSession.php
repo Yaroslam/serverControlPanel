@@ -47,6 +47,7 @@ class ChainSession extends AbstractSession
         } else {
             $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         }
+        var_dump($this->deepLevel);
 
         return $this;
     }
@@ -62,6 +63,7 @@ class ChainSession extends AbstractSession
         }
         $this->deepLevel += 1;
         $this->operatorsGraph[$this->deepLevel] = $newIf;
+        var_dump($this->deepLevel);
 
         return $this;
     }
@@ -70,6 +72,7 @@ class ChainSession extends AbstractSession
     {
         //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel] != null ? $this->operatorsGraph[$this->deepLevel] : new NoneCommand();
         $this->deepLevel -= 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -81,6 +84,7 @@ class ChainSession extends AbstractSession
         //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ThenCommand();
         $this->deepLevel += 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -90,6 +94,7 @@ class ChainSession extends AbstractSession
     {
         $this->deepLevel -= 1;
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->lastCommand, 'then');
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -100,6 +105,7 @@ class ChainSession extends AbstractSession
         //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ElseCommand();
         $this->deepLevel += 1;
+        var_dump($this->deepLevel);
 
         return $this;
 
@@ -109,6 +115,7 @@ class ChainSession extends AbstractSession
     {
         $this->deepLevel -= 1;
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->lastCommand, 'else');
+        var_dump($this->deepLevel);
 
         return $this;
 
