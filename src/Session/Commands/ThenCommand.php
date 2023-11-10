@@ -15,8 +15,6 @@ class ThenCommand extends BaseCommand
 
     public function execution($shell)
     {
-        var_dump($shell);
-        var_dump($this->body);
         foreach ($this->body as $command) {
             var_dump(1212323423424);
             $command->execution($shell);
@@ -25,7 +23,7 @@ class ThenCommand extends BaseCommand
 
     public function addToBody(BaseCommand $command)
     {
-        var_dump($command);
         $this->body[] = $command;
+        var_dump($this->body);
     }
 }
