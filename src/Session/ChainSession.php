@@ -29,11 +29,14 @@ class ChainSession extends AbstractSession
 
     private int $deepLevel;
 
+    private array $operatorsGraph;
+
     public function initChain()
     {
         $this->lastCommand = new NoneCommand();
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
         $this->deepLevel = 0;
+        $this->operatorsGraph = [];
 
         return $this;
     }
@@ -61,6 +64,7 @@ class ChainSession extends AbstractSession
             $this->lastCommand = $newIf;
         }
         $this->deepLevel += 1;
+        $this->operatorsGraph[$this->deepLevel] = $this->lastCommand;
 
         return $this;
     }
@@ -77,7 +81,8 @@ class ChainSession extends AbstractSession
 
     public function then()
     {
-        $this->lastOperator = $this->lastCommand;
+        //        $this->lastOperator = $this->lastCommand;
+        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ThenCommand();
         $this->deepLevel += 1;
 
@@ -88,7 +93,7 @@ class ChainSession extends AbstractSession
     public function endThen()
     {
         var_dump($this->lastCommand->getCommandName());
-        $this->lastOperator->addToBody($this->lastCommand, 'then');
+        $this->lastOperator->addToBody($this->operatorsGraph[$this->deepLevel - 1], 'then');
         $this->lastCommand = $this->lastOperator;
         $this->deepLevel -= 1;
 
@@ -98,7 +103,7 @@ class ChainSession extends AbstractSession
 
     public function else()
     {
-        $this->lastOperator = $this->lastCommand;
+        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ElseCommand();
         $this->deepLevel += 1;
 
