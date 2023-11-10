@@ -56,14 +56,12 @@ class ChainSession extends AbstractSession
         if ($this->deepLevel == 0) {
             $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->chainCommands[] = $newIf;
-            $this->lastCommand = $newIf;
         } else {
             $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->lastCommand->addToBody($newIf);
-            $this->lastCommand = $newIf;
         }
         $this->deepLevel += 1;
-        $this->operatorsGraph[$this->deepLevel] = $this->lastCommand;
+        $this->operatorsGraph[$this->deepLevel] = $newIf;
 
         return $this;
     }
