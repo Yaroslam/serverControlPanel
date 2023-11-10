@@ -45,6 +45,7 @@ class ChainSession extends AbstractSession
         if ($this->deepLevel == 0) {
             $this->chainCommands[] = new ExecCommand($cmdCommand);
         } else {
+            var_dump($this->lastCommand);
             $this->lastCommand->addToBody(new ExecCommand($cmdCommand));
         }
 
