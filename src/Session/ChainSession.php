@@ -102,6 +102,7 @@ class ChainSession extends AbstractSession
     public function endThen()
     {
         $this->deepLevel -= 1;
+        var_dump($this->currBlock);
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->blockGraph[$this->currBlock], 'then');
         var_dump($this->deepLevel);
 
@@ -125,6 +126,7 @@ class ChainSession extends AbstractSession
     public function endElse()
     {
         $this->deepLevel -= 1;
+        var_dump($this->currBlock);
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->blockGraph[$this->currBlock], 'else');
         var_dump($this->deepLevel);
 
