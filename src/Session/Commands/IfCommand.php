@@ -27,7 +27,7 @@ class IfCommand extends BaseCommand
         while ($out = fgets($shell)) {
             $outLine .= $out."\n";
         }
-
+        var_dump($outLine);
         if (preg_match("/$this->ifStatment/", $outLine)) {
             $this->ifResult = true;
             $this->body['then']->execution($shell);
