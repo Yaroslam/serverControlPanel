@@ -25,6 +25,7 @@ class ThenCommand extends BaseCommand
 
     public function addToBody(BaseCommand $command)
     {
+        var_dump($command);
         $this->body[] = $command;
     }
 }
