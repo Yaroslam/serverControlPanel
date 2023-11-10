@@ -33,7 +33,6 @@ class ChainSession extends AbstractSession
 
     public function initChain()
     {
-        $this->lastCommand = new NoneCommand();
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
         $this->deepLevel = 0;
         $this->operatorsGraph = [];
