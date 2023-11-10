@@ -124,6 +124,8 @@ class ChainSession extends AbstractSession
     public function apply()
     {
         var_dump($this->chainCommands);
+        var_dump("\n");
+        var_dump($this->operatorsGraph);
         foreach ($this->chainCommands as $command) {
             $command->execution($this->shell);
         }
