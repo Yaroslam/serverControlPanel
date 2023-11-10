@@ -74,7 +74,7 @@ class ChainSession extends AbstractSession
     public function endIf()
     {
         $this->lastCommand = new NoneCommand();
-        $this->lastOperator = $this->operatorsGraph[$this->deepLevel - 1] != null ? $this->operatorsGraph[$this->deepLevel - 1] : new NoneCommand();
+        $this->lastOperator = $this->operatorsGraph[$this->deepLevel] != null ? $this->operatorsGraph[$this->deepLevel] : new NoneCommand();
         $this->deepLevel -= 1;
         var_dump($this->deepLevel);
 
