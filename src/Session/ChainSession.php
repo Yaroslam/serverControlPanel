@@ -97,8 +97,8 @@ class ChainSession extends AbstractSession
     public function endThen()
     {
         $this->deepLevel -= 1;
-        $this->lastOperator->addToBody($this->operatorsGraph[$this->deepLevel], 'then');
-        $this->lastCommand = $this->lastOperator;
+        $this->operatorsGraph[$this->deepLevel]->addToBody(new ThenCommand(), 'then');
+        $this->lastCommand = $this->operatorsGraph[$this->deepLevel];
         var_dump($this->deepLevel);
 
         return $this;
@@ -119,8 +119,8 @@ class ChainSession extends AbstractSession
     public function endElse()
     {
         $this->deepLevel -= 1;
-        $this->lastOperator->addToBody(new ElseCommand(), 'else');
-        $this->lastCommand = $this->lastOperator;
+        $this->operatorsGraph[$this->deepLevel]->addToBody(new ElseCommand(), 'else');
+        $this->lastCommand = $this->operatorsGraph[$this->deepLevel];
         var_dump($this->deepLevel);
         var_dump($this->lastCommand);
 
