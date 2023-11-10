@@ -1,7 +1,7 @@
 {
     "name": "yaroslam/ssh2",
     "type": "project",
-    "license": "mit-8",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Yaroslam\\SSH2\\": "src/"
