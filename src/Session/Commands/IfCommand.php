@@ -12,11 +12,11 @@ class IfCommand extends BaseCommand
 
     protected CommandClasses $commandType = CommandClasses::Operator;
 
-    public function __construct(string $cmdText, $ifStatment)
+    public function __construct(string $cmdText, $ifStatement)
     {
         $this->body = [];
         $this->commandText = $cmdText;
-        $this->ifStatment = $ifStatment;
+        $this->ifStatment = $ifStatement;
     }
 
     public function execution($shell)
@@ -34,6 +34,7 @@ class IfCommand extends BaseCommand
             $this->body['then']->execution($shell);
         } else {
             $this->ifResult = false;
+            var_dump($this->body);
             $this->body['else']->execution($shell);
         }
     }
