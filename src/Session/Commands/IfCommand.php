@@ -34,6 +34,7 @@ class IfCommand extends BaseCommand
             var_dump('true '.$this->commandText);
         } else {
             $this->ifResult = false;
+            var_dump('false '.$this->commandText);
             $this->body['else']->execution($shell);
         }
     }
