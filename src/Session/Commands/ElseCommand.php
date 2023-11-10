@@ -15,9 +15,6 @@ class ElseCommand extends BaseCommand
 
     public function execution($shell)
     {
-        var_dump('else');
-        var_dump($shell);
-        var_dump($this->body);
         foreach ($this->body as $command) {
             $command->execute($shell);
         }
