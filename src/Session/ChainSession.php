@@ -10,9 +10,11 @@ namespace Yaroslam\SSH2\Session;
 
 use Yaroslam\SSH2\Session\Commands\BaseCommand;
 use Yaroslam\SSH2\Session\Commands\ElseCommand;
+use Yaroslam\SSH2\Session\Commands\EndElseCommand;
+use Yaroslam\SSH2\Session\Commands\EndIfCommand;
+use Yaroslam\SSH2\Session\Commands\EndThenCommand;
 use Yaroslam\SSH2\Session\Commands\ExecCommand;
 use Yaroslam\SSH2\Session\Commands\IfCommand;
-use Yaroslam\SSH2\Session\Commands\NoneCommand;
 use Yaroslam\SSH2\Session\Commands\ThenCommand;
 
 class ChainSession extends AbstractSession
@@ -25,8 +27,6 @@ class ChainSession extends AbstractSession
 
     private BaseCommand $lastCommand;
 
-    private BaseCommand $lastOperator;
-
     private int $deepLevel;
 
     private array $operatorsGraph;
@@ -35,51 +35,51 @@ class ChainSession extends AbstractSession
 
     private string $currBlock;
 
+    private array $workFlowTypes;
+
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
         $this->deepLevel = 0;
         $this->operatorsGraph = [];
         $this->blockGraph = [];
+        $this->workFlowTypes = [];
 
         return $this;
     }
 
     public function exec(string $cmdCommand)
     {
+        $execCommand = new ExecCommand($cmdCommand);
         if ($this->deepLevel == 0) {
-            $this->chainCommands[] = new ExecCommand($cmdCommand);
+            $this->chainCommands[] = $execCommand;
         } else {
-            $this->blockGraph[$this->currBlock]->addToBody(new ExecCommand($cmdCommand));
-            var_dump($this->currBlock);
-            var_dump($this->blockGraph[$this->currBlock]);
+            $this->blockGraph[$this->currBlock]->addToBody($execCommand);
         }
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = $execCommand->getCommandType();
 
         return $this;
     }
 
     public function if(string $cmdCommand, string $ifStatement)
     {
+        $newIf = new IfCommand($cmdCommand, $ifStatement);
         if ($this->deepLevel == 0) {
-            $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->chainCommands[] = $newIf;
         } else {
-            $newIf = new IfCommand($cmdCommand, $ifStatement);
             $this->lastCommand->addToBody($newIf);
         }
         $this->deepLevel += 1;
         $this->operatorsGraph[$this->deepLevel] = $newIf;
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = $newIf->getCommandType();
 
         return $this;
     }
 
     public function endIf()
     {
-        //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel] != null ? $this->operatorsGraph[$this->deepLevel] : new NoneCommand();
         $this->deepLevel -= 1;
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = EndIfCommand::getCommandType();
 
         return $this;
 
@@ -87,13 +87,11 @@ class ChainSession extends AbstractSession
 
     public function then()
     {
-        //        $this->lastOperator = $this->lastCommand;
-        //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ThenCommand();
         $this->currBlock = $this->deepLevel.'.then';
         $this->blockGraph[$this->currBlock] = $this->lastCommand;
         $this->deepLevel += 1;
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = $this->lastCommand->getCommandType();
 
         return $this;
 
@@ -102,9 +100,8 @@ class ChainSession extends AbstractSession
     public function endThen()
     {
         $this->deepLevel -= 1;
-        var_dump($this->currBlock);
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->blockGraph[$this->deepLevel.'.then'], 'then');
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = EndThenCommand::getCommandType();
 
         return $this;
 
@@ -112,12 +109,11 @@ class ChainSession extends AbstractSession
 
     public function else()
     {
-        //        $this->lastOperator = $this->operatorsGraph[$this->deepLevel];
         $this->lastCommand = new ElseCommand();
         $this->currBlock = $this->deepLevel.'.else';
         $this->blockGraph[$this->currBlock] = $this->lastCommand;
         $this->deepLevel += 1;
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = $this->lastCommand->getCommandType();
 
         return $this;
 
@@ -126,9 +122,8 @@ class ChainSession extends AbstractSession
     public function endElse()
     {
         $this->deepLevel -= 1;
-        var_dump($this->currBlock);
         $this->operatorsGraph[$this->deepLevel]->addToBody($this->blockGraph[$this->deepLevel.'.else'], 'else');
-        var_dump($this->deepLevel);
+        $this->workFlowTypes[] = EndElseCommand::getCommandType();
 
         return $this;
 
@@ -136,11 +131,10 @@ class ChainSession extends AbstractSession
 
     public function apply()
     {
-        var_dump($this->chainCommands);
-        var_dump("\n");
-        var_dump($this->operatorsGraph);
-        foreach ($this->chainCommands as $command) {
-            $command->execution($this->shell);
+        if ($this->checkWorkFlow()) {
+            foreach ($this->chainCommands as $command) {
+                $command->execution($this->shell);
+            }
         }
 
         return $this;
@@ -150,5 +144,17 @@ class ChainSession extends AbstractSession
     public function getExecContext()
     {
         return $this->chainContext;
+    }
+
+    private function checkWorkFlow(): bool
+    {
+        $rules = require __DIR__.'/Commands/Rules/Rules.php';
+        for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
+            if (! in_array($this->workFlowTypes[$i + 1], $rules[$this->workFlowTypes[$i]->name()])) {
+                throw new \Error();
+            }
+        }
+
+        return true;
     }
 }

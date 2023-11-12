@@ -20,16 +20,11 @@ abstract class BaseCommand
 
     abstract public function execution($shell);
 }
-// типы команд: single->exec, block->then,else,while,case, operator->if,switch, Non->заглушка
+// типы команд: single->exec, block->then,else,while,case,for operator->if,switch, Non->заглушка
 // блоки хранят массив других команд, операторы хранят условия выполнения команд и другие команды
 // топ левел команды: if, exec, while, switch
 // команды нижних уровней: then, else, case, exec
 // зависимость оператор->тело if->then, if->else, while->all, switch->case
-//  then->all, else->all, case->all, exec->none
+//  then->all, else->all, case->all, exec->none, for->all
 // выполнение команд:
 //  1)вызываем execution верхних команд, метод execution операторов вызывает
-//
-//
-//
-//
-//
