@@ -155,7 +155,7 @@ class ChainSession extends AbstractSession
     public function apply()
     {
         var_dump($this->workFlowTypes);
-        var_dump(checkWorkFlow());
+        var_dump($this->checkWorkFlow());
         if ($this->checkWorkFlow()) {
             foreach ($this->chainCommands as $command) {
                 $command->execution($this->shell);
