@@ -130,6 +130,28 @@ class ChainSession extends AbstractSession
 
     }
 
+    public function getExecContext()
+    {
+        return $this->chainContext;
+    }
+
+    private function checkWorkFlow(): bool
+    {
+        $rules = require __DIR__.'/Commands/Rules/Rules.php';
+        for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
+            var_dump(in_array($this->workFlowTypes[$i + 1]->name(), $rules[$this->workFlowTypes[$i]->name()]));
+            var_dump($this->workFlowTypes[$i + 1]->name());
+            var_dump($rules[$this->workFlowTypes[$i]->name()]);
+            if (! in_array($this->workFlowTypes[$i + 1]->name(), $rules[$this->workFlowTypes[$i]->name()])) {
+                throw new WorkflowTypeOrderException([
+                    'prev' => $this->workFlowTypes[$i],
+                    'next' => $this->workFlowTypes[$i + 1]]);
+            }
+        }
+
+        return true;
+    }
+
     public function apply()
     {
         if ($this->checkWorkFlow()) {
@@ -140,24 +162,5 @@ class ChainSession extends AbstractSession
 
         return $this;
 
-    }
-
-    public function getExecContext()
-    {
-        return $this->chainContext;
-    }
-
-    private function checkWorkFlow(): bool
-    {
-        $rules = require __DIR__.'/Commands/Rules/Rules.php';
-        for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
-            if (! in_array($this->workFlowTypes[$i + 1], $rules[$this->workFlowTypes[$i]->name()])) {
-                throw new WorkflowTypeOrderException([
-                    'prev' => $this->workFlowTypes[$i],
-                    'next' => $this->workFlowTypes[$i + 1]]);
-            }
-        }
-
-        return true;
     }
 }
