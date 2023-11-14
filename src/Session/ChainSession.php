@@ -13,6 +13,7 @@ use Yaroslam\SSH2\Session\Commands\ElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndIfCommand;
 use Yaroslam\SSH2\Session\Commands\EndThenCommand;
+use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 use Yaroslam\SSH2\Session\Commands\ExecCommand;
 use Yaroslam\SSH2\Session\Commands\IfCommand;
 use Yaroslam\SSH2\Session\Commands\ThenCommand;
@@ -151,7 +152,9 @@ class ChainSession extends AbstractSession
         $rules = require __DIR__.'/Commands/Rules/Rules.php';
         for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
             if (! in_array($this->workFlowTypes[$i + 1], $rules[$this->workFlowTypes[$i]->name()])) {
-                throw new \Error();
+                throw new WorkflowTypeOrderException([
+                    'prev' => $this->workFlowTypes[$i],
+                    'next' => $this->workFlowTypes[$i + 1]]);
             }
         }
 
