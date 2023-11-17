@@ -11,10 +11,12 @@ namespace Yaroslam\SSH2\Session;
 use Yaroslam\SSH2\Session\Commands\BaseCommand;
 use Yaroslam\SSH2\Session\Commands\ElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
+use Yaroslam\SSH2\Session\Commands\EndForCommand;
 use Yaroslam\SSH2\Session\Commands\EndIfCommand;
 use Yaroslam\SSH2\Session\Commands\EndThenCommand;
 use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 use Yaroslam\SSH2\Session\Commands\ExecCommand;
+use Yaroslam\SSH2\Session\Commands\ForCommand;
 use Yaroslam\SSH2\Session\Commands\IfCommand;
 use Yaroslam\SSH2\Session\Commands\ThenCommand;
 
@@ -26,7 +28,7 @@ class ChainSession extends AbstractSession
 
     private array $chainCommands;
 
-    private BaseCommand $lastCommand;
+    private $lastCommand;
 
     private int $deepLevel;
 
@@ -128,6 +130,30 @@ class ChainSession extends AbstractSession
 
         return $this;
 
+    }
+
+    public function for($start, $stop, $step=1)
+    {
+        $newFor = new ForCommand($start, $stop, $step);
+        if ($this->deepLevel == 0) {
+            $this->chainCommands[] = $newFor;
+        } else {
+            $this->lastCommand->addToBody($newFor);
+        }
+        $this->lastCommand = $newFor;
+        $this->currBlock = $this->deepLevel.'.for';
+        $this->deepLevel += 1;
+        $this->blockGraph[$this->currBlock] = $this->lastCommand;
+        $this->workFlowTypes[] = $newFor->getCommandType();
+
+        return $this;
+    }
+
+    public function endFor()
+    {
+        $this->deepLevel -= 1;
+        $this->workFlowTypes[] = EndForCommand::getCommandType();
+        return $this;
     }
 
     public function getExecContext()
