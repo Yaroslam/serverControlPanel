@@ -13,7 +13,7 @@ class ExecCommand extends BaseCommand
 
     public function execution($shell)
     {
-        var_dump("exec ".$this->commandText);
+        var_dump('exec '.$this->commandText);
         fwrite($shell, $this->commandText.PHP_EOL);
         sleep(1);
         $outLine = '';

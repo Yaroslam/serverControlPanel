@@ -8,7 +8,6 @@ namespace Yaroslam\SSH2\Session;
 //  3)глобальный и локальный контекст выполнения
 //  4)очистка контекста от введенных команд
 
-use Yaroslam\SSH2\Session\Commands\BaseCommand;
 use Yaroslam\SSH2\Session\Commands\ElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndForCommand;
@@ -132,7 +131,7 @@ class ChainSession extends AbstractSession
 
     }
 
-    public function for($start, $stop, $step=1)
+    public function for($start, $stop, $step = 1)
     {
         $newFor = new ForCommand($start, $stop, $step);
         if ($this->deepLevel == 0) {
@@ -153,6 +152,7 @@ class ChainSession extends AbstractSession
     {
         $this->deepLevel -= 1;
         $this->workFlowTypes[] = EndForCommand::getCommandType();
+
         return $this;
     }
 
