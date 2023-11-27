@@ -2,12 +2,6 @@
 
 namespace Yaroslam\SSH2\Session;
 
-// TODO:
-//  1)сделать иннер и реал действия
-//  2)вывод ошибок
-//  3)глобальный и локальный контекст выполнения
-//  4)очистка контекста от введенных команд
-
 use Yaroslam\SSH2\Session\Commands\ElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndForCommand;
@@ -165,10 +159,7 @@ class ChainSession extends AbstractSession
     {
         $rules = require __DIR__.'/Commands/Rules/Rules.php';
         for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
-            var_dump(in_array($this->workFlowTypes[$i + 1]->name(), $rules[$this->workFlowTypes[$i]->name()]));
-            var_dump($this->workFlowTypes[$i + 1]->name());
-            var_dump($rules[$this->workFlowTypes[$i]->name()]);
-            if (! in_array($this->workFlowTypes[$i + 1]->name(), $rules[$this->workFlowTypes[$i]->name()])) {
+            if (! in_array($this->workFlowTypes[$i + 1], $rules[$this->workFlowTypes[$i]->name])) {
                 throw new WorkflowTypeOrderException([
                     'prev' => $this->workFlowTypes[$i],
                     'next' => $this->workFlowTypes[$i + 1]]);

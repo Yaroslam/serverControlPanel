@@ -10,8 +10,8 @@ class WorkflowTypeOrderException extends Exception
     {
         parent::__construct();
         $this->message = 'Workflow order error, command with type '
-            .$commands['prev']->name().
+            .$commands['prev']->name.
             ' cant stand before command with type '
-            .$commands['next']->name();
+            .$commands['next']->name;
     }
 }

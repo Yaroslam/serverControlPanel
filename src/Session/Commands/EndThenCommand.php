@@ -6,6 +6,6 @@ class EndThenCommand
 {
     public static function getCommandType()
     {
-        return null;
+        return CommandClasses::None;
     }
 }

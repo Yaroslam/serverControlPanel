@@ -2,9 +2,11 @@
 
 namespace Yaroslam\SSH2\Session\Commands;
 
+use Yaroslam\SSH2\Session\Commands\Traits\HasBody;
+
 class IfCommand extends BaseCommand
 {
-    private array $body;
+    use HasBody;
 
     private $ifStatment;
 
@@ -14,7 +16,6 @@ class IfCommand extends BaseCommand
 
     public function __construct(string $cmdText, $ifStatement)
     {
-        $this->body = [];
         $this->commandText = $cmdText;
         $this->ifStatment = $ifStatement;
     }

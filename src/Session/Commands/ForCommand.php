@@ -2,9 +2,11 @@
 
 namespace Yaroslam\SSH2\Session\Commands;
 
+use Yaroslam\SSH2\Session\Commands\Traits\HasBody;
+
 class ForCommand extends BaseCommand
 {
-    private array $body;
+    use HasBody;
 
     private $forStart;
 
@@ -16,7 +18,6 @@ class ForCommand extends BaseCommand
 
     public function __construct(int $forStart, int $forStop, int $forStep = 1)
     {
-        $this->body = [];
         $this->forStart = $forStart;
         $this->forStop = $forStop;
         $this->forStep = $forStep;
@@ -31,10 +32,5 @@ class ForCommand extends BaseCommand
                 $command->execution($shell);
             }
         }
-    }
-
-    public function addToBody(BaseCommand $command)
-    {
-        $this->body[] = $command;
     }
 }
