@@ -24,6 +24,8 @@ class Connector
 
     public function connect()
     {
+        var_dump($this->host);
+        var_dump($this->port);
         $this->connectionTunnel = ssh2_connect($this->host, $this->port);
         $this->connection->connect($this->connectionTunnel, $this->connectProperties['properties']);
     }

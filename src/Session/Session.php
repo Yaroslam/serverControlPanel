@@ -23,9 +23,4 @@ class Session extends AbstractSession
     {
         return $this->context;
     }
-
-    public function getExecContext()
-    {
-        return $this->context;
-    }
 }

@@ -33,6 +33,12 @@ class ChainSession extends AbstractSession
 
     private array $workFlowTypes;
 
+    private array $functions;
+
+    //    TODO
+    //      очистка всего после apply и endfunction
+    //
+    //
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
@@ -40,6 +46,7 @@ class ChainSession extends AbstractSession
         $this->operatorsGraph = [];
         $this->blockGraph = [];
         $this->workFlowTypes = [];
+        $this->functions = [];
 
         return $this;
     }
@@ -155,14 +162,14 @@ class ChainSession extends AbstractSession
         return $this->chainContext;
     }
 
-    private function checkWorkFlow(): bool
+    private function checkWorkFlow(array $workflow): bool
     {
         $rules = require __DIR__.'/Commands/Rules/Rules.php';
-        for ($i = 0; $i < count($this->workFlowTypes) - 1; $i++) {
-            if (! in_array($this->workFlowTypes[$i + 1], $rules[$this->workFlowTypes[$i]->name])) {
+        for ($i = 0; $i < count($workflow) - 1; $i++) {
+            if (! in_array($workflow[$i + 1], $rules[$workflow[$i]->name])) {
                 throw new WorkflowTypeOrderException([
-                    'prev' => $this->workFlowTypes[$i],
-                    'next' => $this->workFlowTypes[$i + 1]]);
+                    'prev' => $workflow[$i],
+                    'next' => $workflow[$i + 1]]);
             }
         }
 
@@ -171,15 +178,37 @@ class ChainSession extends AbstractSession
 
     public function apply()
     {
-        var_dump($this->workFlowTypes);
-        var_dump($this->checkWorkFlow());
-        if ($this->checkWorkFlow()) {
+        if ($this->checkWorkFlow($this->workFlowTypes)) {
             foreach ($this->chainCommands as $command) {
                 $command->execution($this->shell);
             }
         }
 
         return $this;
+    }
 
+    public function declareFunction(string $name)
+    {
+        $this->functions[$name] = [];
+
+        return $this;
+    }
+
+    public function endFunction(string $name)
+    {
+        $this->functions[$name] = ['chain' => $this->chainCommands,
+            'workflow' => $this->workFlowTypes,
+        ];
+    }
+
+    public function useFunction(string $name)
+    {
+        if ($this->checkWorkFlow($this->functions[$name]['workflow'])) {
+            foreach ($this->functions[$name]['chain'] as $command) {
+                $command->execution($this->shell);
+            }
+        }
+
+        return $this;
     }
 }
