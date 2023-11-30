@@ -11,6 +11,8 @@ class ExecCommand extends BaseCommand
         $this->commandText = $cmdText;
     }
 
+    // TODO
+    //  переделать на стримы эрроров и вывода или stream_get_mate_data
     public function execution($shell)
     {
         var_dump('exec '.$this->commandText);
@@ -20,7 +22,7 @@ class ExecCommand extends BaseCommand
         while ($out = fgets($shell)) {
             $outLine .= $out."\n";
         }
-        var_dump($outLine);
-        //        return $outLine;
+
+        return $outLine;
     }
 }

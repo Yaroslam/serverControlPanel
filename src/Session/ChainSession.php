@@ -47,6 +47,7 @@ class ChainSession extends AbstractSession
         $this->blockGraph = [];
         $this->workFlowTypes = [];
         $this->functions = [];
+        $this->chainContext = [];
 
         return $this;
     }
@@ -157,9 +158,21 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
-    public function getExecContext()
+    public function getExecContext($con = [], $output = '')
     {
-        return $this->chainContext;
+        if ($con == []) {
+            $con = $this->chainContext;
+        }
+        foreach ($con as $context) {
+            if (is_string($context)) {
+                $output .= $context;
+                var_dump($context);
+            } else {
+                $output .= $this->getExecContext($context, $output);
+            }
+        }
+
+        return $output;
     }
 
     private function checkWorkFlow(array $workflow): bool
@@ -180,7 +193,7 @@ class ChainSession extends AbstractSession
     {
         if ($this->checkWorkFlow($this->workFlowTypes)) {
             foreach ($this->chainCommands as $command) {
-                $command->execution($this->shell);
+                $this->chainContext[] = $command->execution($this->shell);
             }
         }
 
