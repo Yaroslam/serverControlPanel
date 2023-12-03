@@ -36,25 +36,36 @@ class ChainSession extends AbstractSession
     private array $functions;
 
     //    TODO
-    //      очистка всего после apply и endfunction
-    //      феей эксекьюшн
     //      ошибки для отсутвия ексит кода, ексик код не равен 0
     public function initChain()
     {
         $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
+        $this->fakeStart();
         $this->deepLevel = 0;
         $this->operatorsGraph = [];
         $this->blockGraph = [];
         $this->workFlowTypes = [];
         $this->functions = [];
         $this->chainContext = [];
+        $this->chainCommands = [];
 
         return $this;
     }
 
-    public function exec(string $cmdCommand)
+    private function fakeStart()
     {
-        $execCommand = new ExecCommand($cmdCommand);
+        $this->deepLevel = 0;
+        $this->operatorsGraph = [];
+        $this->blockGraph = [];
+        $this->workFlowTypes = [];
+        $this->functions = [];
+        $this->chainContext = [];
+        $this->exec('echo start', false)->apply();
+    }
+
+    public function exec(string $cmdCommand, bool $needProof = true)
+    {
+        $execCommand = new ExecCommand($cmdCommand, $needProof);
         if ($this->deepLevel == 0) {
             $this->chainCommands[] = $execCommand;
         } else {
@@ -191,6 +202,7 @@ class ChainSession extends AbstractSession
 
     public function apply()
     {
+        var_dump('----------------apply-----------------');
         if ($this->checkWorkFlow($this->workFlowTypes)) {
             foreach ($this->chainCommands as $command) {
                 $this->chainContext[] = $command->execution($this->shell);
