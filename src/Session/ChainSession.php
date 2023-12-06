@@ -52,6 +52,7 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
+//    fake start для того, что бы первая выполняемая команда не выводилась вместе с сообщениями старта системы
     private function fakeStart()
     {
         $this->deepLevel = 0;
@@ -60,12 +61,13 @@ class ChainSession extends AbstractSession
         $this->workFlowTypes = [];
         $this->functions = [];
         $this->chainContext = [];
+        $this->chainCommands = [];
         $this->exec('echo start', false)->apply();
     }
 
-    public function exec(string $cmdCommand, bool $needProof = true)
+    public function exec(string $cmdCommand, bool $needProof = true, int $timeout=4)
     {
-        $execCommand = new ExecCommand($cmdCommand, $needProof);
+        $execCommand = new ExecCommand($cmdCommand, $needProof, $timeout);
         if ($this->deepLevel == 0) {
             $this->chainCommands[] = $execCommand;
         } else {
@@ -169,17 +171,21 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
-    public function getExecContext($con = [], $output = '')
+    public function getExecContext($con = [], $output = ["command" => [], "exit_code" => [], "output" => []])
     {
         if ($con == []) {
             $con = $this->chainContext;
         }
+        var_dump($con);
         foreach ($con as $context) {
-            if (is_string($context)) {
-                $output .= $context;
-                var_dump($context);
+            var_dump("1");
+            if (array_key_exists("command", $con)) {
+                $output["command"][] = $con["command"];
+                $output["exit_code"][] = $con["exit_code"];
+                $output["output"][] = $con["output"];
+                return $output;
             } else {
-                $output .= $this->getExecContext($context, $output);
+                $output = $this->getExecContext($context, $output);
             }
         }
 
@@ -198,18 +204,6 @@ class ChainSession extends AbstractSession
         }
 
         return true;
-    }
-
-    public function apply()
-    {
-        var_dump('----------------apply-----------------');
-        if ($this->checkWorkFlow($this->workFlowTypes)) {
-            foreach ($this->chainCommands as $command) {
-                $this->chainContext[] = $command->execution($this->shell);
-            }
-        }
-
-        return $this;
     }
 
     public function declareFunction(string $name)
@@ -236,4 +230,16 @@ class ChainSession extends AbstractSession
 
         return $this;
     }
+
+    public function apply()
+    {
+        var_dump('----------------apply-----------------');
+        if ($this->checkWorkFlow($this->workFlowTypes)) {
+            foreach ($this->chainCommands as $command) {
+                $this->chainContext[] = $command->execution($this->shell);
+            }
+        }
+        return $this;
+    }
 }
+
