@@ -15,6 +15,11 @@ abstract class AbstractSession
         $this->connector->connect();
     }
 
+    public function getConnection()
+    {
+
+    }
+
     abstract public function apply();
 
     abstract public function exec(string $cmdCommand);

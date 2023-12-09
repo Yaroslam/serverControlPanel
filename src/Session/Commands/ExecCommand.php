@@ -8,11 +8,12 @@ use Yaroslam\SSH2\Session\Commands\Exceptions\ExitCodeNotFoundException;
 class ExecCommand extends BaseCommand
 {
     private bool $needProof;
+
     private int $timeout;
 
     protected CommandClasses $commandType = CommandClasses::Single;
 
-    public function __construct(string $cmdText, bool $needProf = true, $timeout=4)
+    public function __construct(string $cmdText, bool $needProf = true, $timeout = 4)
     {
         $this->commandText = $cmdText;
         $this->needProof = $needProf;
@@ -36,10 +37,10 @@ class ExecCommand extends BaseCommand
         if ($this->needProof) {
             if (! preg_match("#^(.*)\n(0|-?[1-9][0-9]*).*\n#s", $outLine, $matches)) {
                 throw new ExitCodeNotFoundException($this->commandText);
-            } else if ($matches[2] === "0") {
+            } elseif ($matches[2] === '0') {
                 $outArr['command'] = $this->commandText;
                 $outArr['exit_code'] = $matches[2];
-                $outArr['output'] = $matches[1];
+                $outArr['output'] = str_replace($this->commandText.';echo -e "\n$?"'.PHP_EOL, '', $matches[1]);
             } else {
                 throw new ExitCodeException($matches[2], $this->commandText);
             }

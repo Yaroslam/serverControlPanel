@@ -8,11 +8,11 @@ class Session extends AbstractSession
 
     public function exec(string $cmdCommand)
     {
-        $stream = ssh2_exec($this->connector->getConnectionTunnel(), $cmdCommand);
+        $stream = ssh2_exec($this->connector->getSsh2Connect(), $cmdCommand);
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
-        $this->context = ['output' => stream_get_contents($stream), 'error' => stream_get_contents($errorStream)];
+        $this->context = ['output' => trim(stream_get_contents($stream)), 'error' => trim(stream_get_contents($errorStream))];
         fclose($errorStream);
         fclose($stream);
 

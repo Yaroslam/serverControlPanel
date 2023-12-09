@@ -35,11 +35,9 @@ class ChainSession extends AbstractSession
 
     private array $functions;
 
-    //    TODO
-    //      ошибки для отсутвия ексит кода, ексик код не равен 0
     public function initChain()
     {
-        $this->shell = ssh2_shell($this->connector->getConnectionTunnel());
+        $this->shell = ssh2_shell($this->connector->getSsh2Connect());
         $this->fakeStart();
         $this->deepLevel = 0;
         $this->operatorsGraph = [];
@@ -52,7 +50,7 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
-//    fake start для того, что бы первая выполняемая команда не выводилась вместе с сообщениями старта системы
+    //    fake start для того, что бы первая выполняемая команда не выводилась вместе с сообщениями старта системы
     private function fakeStart()
     {
         $this->deepLevel = 0;
@@ -65,7 +63,7 @@ class ChainSession extends AbstractSession
         $this->exec('echo start', false)->apply();
     }
 
-    public function exec(string $cmdCommand, bool $needProof = true, int $timeout=4)
+    public function exec(string $cmdCommand, bool $needProof = true, int $timeout = 4)
     {
         $execCommand = new ExecCommand($cmdCommand, $needProof, $timeout);
         if ($this->deepLevel == 0) {
@@ -171,18 +169,17 @@ class ChainSession extends AbstractSession
         return $this;
     }
 
-    public function getExecContext($con = [], $output = ["command" => [], "exit_code" => [], "output" => []])
+    public function getExecContext($con = [], $output = ['command' => [], 'exit_code' => [], 'output' => []])
     {
         if ($con == []) {
             $con = $this->chainContext;
         }
-        var_dump($con);
         foreach ($con as $context) {
-            var_dump("1");
-            if (array_key_exists("command", $con)) {
-                $output["command"][] = $con["command"];
-                $output["exit_code"][] = $con["exit_code"];
-                $output["output"][] = $con["output"];
+            if (array_key_exists('command', $con)) {
+                $output['command'][] = $con['command'];
+                $output['exit_code'][] = $con['exit_code'];
+                $output['output'][] = $con['output'];
+
                 return $output;
             } else {
                 $output = $this->getExecContext($context, $output);
@@ -239,7 +236,7 @@ class ChainSession extends AbstractSession
                 $this->chainContext[] = $command->execution($this->shell);
             }
         }
+
         return $this;
     }
 }
-

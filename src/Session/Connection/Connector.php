@@ -10,7 +10,7 @@ class Connector
 
     private int $port;
 
-    private $connectionTunnel;
+    private $ssh2Connect;
 
     private array $connectProperties;
 
@@ -24,15 +24,13 @@ class Connector
 
     public function connect()
     {
-        var_dump($this->host);
-        var_dump($this->port);
-        $this->connectionTunnel = ssh2_connect($this->host, $this->port);
-        $this->connection->connect($this->connectionTunnel, $this->connectProperties['properties']);
+        $this->ssh2Connect = ssh2_connect($this->host, $this->port);
+        $this->connection->connect($this->ssh2Connect, $this->connectProperties['properties']);
     }
 
-    public function getConnectionTunnel()
+    public function getSsh2Connect()
     {
-        return $this->connectionTunnel;
+        return $this->ssh2Connect;
     }
 
     public function disconnect()
