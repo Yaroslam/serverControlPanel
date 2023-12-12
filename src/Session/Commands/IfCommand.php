@@ -18,22 +18,21 @@ class IfCommand extends BaseCommand
 
     private $ifResult;
 
+    private $timeout;
+
     protected CommandClasses $commandType = CommandClasses::Operator;
 
-    public function __construct(string $cmdText, $ifStatement)
+    public function __construct(string $cmdText, $ifStatement, int $timeout = 2)
     {
         $this->commandText = $cmdText;
         $this->ifStatment = $ifStatement;
+        $this->timeout = $timeout;
     }
 
     public function execution($shell)
     {
-        fwrite($shell, $this->commandText.PHP_EOL);
-        sleep(1);
-        $outLine = '';
-        while ($out = fgets($shell)) {
-            $outLine .= $out."\n";
-        }
+        $exec = new ExecCommand($this->commandText, timeout: $this->timeout);
+        $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         if (preg_match("/$this->ifStatment/", $outLine)) {
             $this->ifResult = true;

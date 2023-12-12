@@ -20,8 +20,6 @@ class ExecCommand extends BaseCommand
         $this->timeout = $timeout;
     }
 
-    // TODO
-    //  fix regexp
     public function execution($shell)
     {
 
