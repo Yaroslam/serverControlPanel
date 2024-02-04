@@ -2,7 +2,7 @@
 
 namespace Yaroslam\SSH2\Session\Commands;
 
-abstract class BaseCommand
+abstract class CommandBase
 {
     protected string $commandText;
 

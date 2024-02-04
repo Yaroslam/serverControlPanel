@@ -5,12 +5,13 @@ namespace Yaroslam\SSH2\Session\Commands;
 use Yaroslam\SSH2\Session\Commands\Traits\HasBody;
 use Yaroslam\SSH2\Session\Commands\Traits\HasContext;
 
-class SwitchCommand extends BaseCommand
+class CommandSwitch extends CommandBase
 {
     use HasBody;
     use HasContext;
 
     private bool $breakable;
+
     private $timeout;
 
     public function __construct(string $cmdText, $breakable = true, int $timeout = 2)
@@ -20,10 +21,9 @@ class SwitchCommand extends BaseCommand
         $this->breakable = $breakable;
     }
 
-
-    public function execution($shell)
+    public function execution($shell): array
     {
-        $exec = new ExecCommand($this->commandText, timeout: $this->timeout);
+        $exec = new ExecCommandBase($this->commandText, timeout: $this->timeout);
         $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         foreach ($this->body as $case) {

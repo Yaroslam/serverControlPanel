@@ -11,7 +11,7 @@ trait HasContext
         $this->context[] = $context;
     }
 
-    public function getContext()
+    public function getContext(): array
     {
         return $this->context;
     }

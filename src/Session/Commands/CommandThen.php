@@ -5,7 +5,7 @@ namespace Yaroslam\SSH2\Session\Commands;
 use Yaroslam\SSH2\Session\Commands\Traits\HasBody;
 use Yaroslam\SSH2\Session\Commands\Traits\HasContext;
 
-class ThenCommand extends BaseCommand
+class CommandThen extends CommandBase
 {
     use HasBody;
     use HasContext;

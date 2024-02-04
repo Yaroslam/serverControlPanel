@@ -5,7 +5,7 @@ namespace Yaroslam\SSH2\Session\Commands;
 use Yaroslam\SSH2\Session\Commands\Exceptions\ExitCodeException;
 use Yaroslam\SSH2\Session\Commands\Exceptions\ExitCodeNotFoundException;
 
-class ExecCommand extends BaseCommand
+class CommandExec extends CommandBase
 {
     private bool $needProof;
 

@@ -5,12 +5,8 @@ namespace Yaroslam\SSH2\Session\Commands;
 use Yaroslam\SSH2\Session\Commands\Traits\HasBody;
 use Yaroslam\SSH2\Session\Commands\Traits\HasContext;
 
-class IfCommand extends BaseCommand
+class CommandIf extends CommandBase
 {
-    //    TODO
-    //      1 перенсти сюда ексек команду
-    //      2 добавить таймаут в констаркт (что бы задавать таймаут для эксек команды)
-    //      3 добавлять в контекст результат ексек команды
     use HasBody;
     use HasContext;
 
@@ -31,7 +27,7 @@ class IfCommand extends BaseCommand
 
     public function execution($shell)
     {
-        $exec = new ExecCommand($this->commandText, timeout: $this->timeout);
+        $exec = new ExecCommandBase($this->commandText, timeout: $this->timeout);
         $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         if (preg_match("/$this->ifStatment/", $outLine)) {
@@ -45,7 +41,7 @@ class IfCommand extends BaseCommand
         return $this->getContext();
     }
 
-    public function addToBody(BaseCommand $command, $thenOrElse)
+    public function addToBody(CommandBase $command, $thenOrElse)
     {
         $this->body[$thenOrElse] = $command;
 
