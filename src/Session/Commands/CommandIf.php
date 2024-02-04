@@ -27,7 +27,7 @@ class CommandIf extends CommandBase
 
     public function execution($shell)
     {
-        $exec = new ExecCommandBase($this->commandText, timeout: $this->timeout);
+        $exec = new CommandExec($this->commandText, timeout: $this->timeout);
         $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         if (preg_match("/$this->ifStatment/", $outLine)) {

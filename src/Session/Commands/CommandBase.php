@@ -27,4 +27,4 @@ abstract class CommandBase
 // зависимость оператор->тело if->then, if->else, while->all, switch->case
 //  then->all, else->all, case->all, exec->none, for->all
 // выполнение команд:
-//  1)вызываем execution верхних команд, метод execution операторов вызывает
+//  1)вызываем execution верхних команд, метод execution операторов вызывает execution вложенных команд

@@ -14,6 +14,8 @@ class CommandSwitch extends CommandBase
 
     private $timeout;
 
+    protected CommandClasses $commandType = CommandClasses::Operator;
+
     public function __construct(string $cmdText, $breakable = true, int $timeout = 2)
     {
         $this->commandText = $cmdText;
@@ -23,7 +25,7 @@ class CommandSwitch extends CommandBase
 
     public function execution($shell): array
     {
-        $exec = new ExecCommandBase($this->commandText, timeout: $this->timeout);
+        $exec = new CommandExec($this->commandText, timeout: $this->timeout);
         $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         foreach ($this->body as $case) {
