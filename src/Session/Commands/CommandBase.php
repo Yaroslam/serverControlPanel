@@ -2,22 +2,50 @@
 
 namespace Yaroslam\SSH2\Session\Commands;
 
+/**
+ * Базовый класс для всех команд
+ */
 abstract class CommandBase
 {
+    /**
+     * @var string текст команды, который будет исполнен
+     */
     protected string $commandText;
 
+    /**
+     * @var CommandClasses тип команды
+     */
     protected CommandClasses $commandType;
 
-    public function getCommandName()
+    /**
+     * Возвращает название команды
+     *
+     * @api
+     *
+     * @return array|string|string[]
+     */
+    public function getCommandName(): array|string
     {
         return str_replace('Command', '', $this::class);
     }
 
-    public function getCommandType()
+    /**
+     * Возвращает класс команды
+     *
+     * @api
+     */
+    public function getCommandType(): CommandClasses
     {
         return $this->commandType;
     }
 
+    /**
+     * Исполняет команду в переданном $shell
+     *
+     * @api
+     *
+     * @param  resource  $shell
+     */
     abstract public function execution($shell);
 }
 // типы команд: single->exec, block->then,else,while,case,for operator->if,switch, Non->заглушка
