@@ -44,7 +44,7 @@ abstract class CommandBase
      *
      * @api
      *
-     * @param  resource  $shell
+     * @param  resource  $shell ресурс консоли, в котрой будут выполнены команды
      */
     abstract public function execution($shell);
 }
