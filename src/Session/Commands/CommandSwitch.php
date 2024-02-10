@@ -58,7 +58,9 @@ class CommandSwitch extends CommandBase
         $outLine = $exec->execution($shell)['output'];
         $this->addToContext($outLine);
         foreach ($this->body as $case) {
-            if (preg_match("/$case->getStatment/", $outLine)) {
+            /* @var $case CommandCase */
+            $caseStatement = $case->getStatement();
+            if (preg_match("/$caseStatement/", $outLine)) {
                 $this->addToBody($case->execution($shell));
                 if ($this->breakable) {
                     break;
