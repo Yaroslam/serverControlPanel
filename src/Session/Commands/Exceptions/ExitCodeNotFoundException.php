@@ -2,6 +2,9 @@
 
 namespace Yaroslam\SSH2\Session\Commands\Exceptions;
 
+/**
+ * Ошибка не нахождения  exit code
+ */
 class ExitCodeNotFoundException extends \Exception
 {
     public function __construct(string $command)
