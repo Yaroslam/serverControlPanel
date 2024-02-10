@@ -2,24 +2,43 @@
 
 namespace Yaroslam\SSH2\Session;
 
+/**
+ * Класс сессии, которая может выполнять только exec команды, не сохраняет своего состояния между выполнениями
+ * @todo добавить историчность выполнения команд
+ */
 class Session extends AbstractSession
 {
+    /**
+     * @var array контекст выполнения
+     */
     private array $context;
 
-    public function exec(string $cmdCommand)
+
+    public function exec(string $cmdCommand): AbstractSession
     {
         $stream = ssh2_exec($this->connector->getSsh2Connect(), $cmdCommand);
-        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-        stream_set_blocking($errorStream, true);
-        stream_set_blocking($stream, true);
-        $this->context = ['output' => trim(stream_get_contents($stream)), 'error' => trim(stream_get_contents($errorStream))];
-        fclose($errorStream);
-        fclose($stream);
-
+        $this->fillContext($stream);
         return $this;
     }
 
-    public function apply()
+    /**
+     * @internal
+     * @param resource $stream ресурс выполнения ssh2_exec($this->connector->getSsh2Connect(), $cmdCommand);
+     * @return void
+     */
+    private function fillContext($stream): void {
+        $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+        stream_set_blocking($errorStream, true);
+        stream_set_blocking($stream, true);
+        fclose($errorStream);
+        $this->context = ['output' => trim(stream_get_contents($stream)), 'error' => trim(stream_get_contents($errorStream))];
+    }
+
+    /**
+     * Возвращает контекст выполнения подключения
+     * @return array
+     */
+    public function apply(): array
     {
         return $this->context;
     }

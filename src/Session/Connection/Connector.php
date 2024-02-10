@@ -57,7 +57,7 @@ class Connector
 
     /**
      * Возвращает ресурс ssh2 подключения
-     * @return mixed
+     * @return resource
      */
     public function getSsh2Connect()
     {
@@ -66,10 +66,10 @@ class Connector
 
     /**
      * Выполняет дисконект
-     * @return int
+     * @return bool
      */
-    public function disconnect(): int
+    public function disconnect(): bool
     {
-        return 0;
+        return ssh2_disconnect($this->ssh2Connect);
     }
 }
