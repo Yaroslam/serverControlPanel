@@ -2,7 +2,6 @@
 
 namespace Yaroslam\SSH2\Session;
 
-use Yaroslam\SSH2\Session\Commands\CommandBase;
 use Yaroslam\SSH2\Session\Commands\CommandCase;
 use Yaroslam\SSH2\Session\Commands\CommandElse;
 use Yaroslam\SSH2\Session\Commands\CommandExec;
@@ -17,6 +16,7 @@ use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 
 /**
  * Класс сессии, которая сохраняет состояние между вызовами и может пользоваться всеми командами
+ *
  * @todo добавить case switch
  */
 class ChainSession extends AbstractSession
@@ -38,6 +38,7 @@ class ChainSession extends AbstractSession
 
     /**
      * @var CommandThen|CommandElse|CommandCase|CommandFor последняя добавленная команда
+     *
      * @todo подумать над переименованием в ластБлок
      */
     private CommandThen|CommandElse|CommandCase|CommandFor $lastCommand;
@@ -73,7 +74,11 @@ class ChainSession extends AbstractSession
     private array $functions;
 
     /**
-     * @param $withFakeStart
+     * Инициализирует сессию
+     *
+     * @api
+     *
+     * @param  bool  $withFakeStart флаг запуска сессии с или без "нулевого старта". Если равен true, то старт состоится. Если равен false, то нет. По умолчанию равен true
      * @return $this
      */
     public function initChain(bool $withFakeStart = true): ChainSession
@@ -94,7 +99,9 @@ class ChainSession extends AbstractSession
     //    fake start для того, что бы первая выполняемая команда не выводилась вместе с сообщениями старта системы
 
     /**
-     * @return void
+     * Совершает нулевой старт
+     *
+     * @internal
      */
     private function fakeStart(): void
     {
@@ -109,9 +116,11 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param string $cmdCommand
-     * @param bool $needProof
-     * @param int $timeout
+     * Исполняет exec команду согласно переданным параметрам.
+     *
+     * @param  string  $cmdCommand текс команды
+     * @param  bool  $needProof  флаг проверки значения статус код по умолчанию равен true, если равен true - проверка проводится, если false - нет.
+     * @param  int  $timeout время задержки перед выполнением
      * @return $this
      */
     public function exec(string $cmdCommand, bool $needProof = true, int $timeout = 4): ChainSession
@@ -128,8 +137,10 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param string $cmdCommand
-     * @param string $ifStatement
+     * Выполняет if команду согласно переданным параметрам
+     *
+     * @param  string  $cmdCommand текс команды
+     * @param  string  $ifStatement строка, вхождение которой будет проверяться на вхождение в результате исполнения команды
      * @return $this
      */
     public function if(string $cmdCommand, string $ifStatement): ChainSession
@@ -148,6 +159,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Окончание if команды
+     *
      * @return $this
      */
     public function endIf(): ChainSession
@@ -160,6 +173,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Выполняет then команду
+     *
      * @return $this
      */
     public function then(): ChainSession
@@ -175,6 +190,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Окончание then команды
+     *
      * @return $this
      */
     public function endThen(): ChainSession
@@ -188,6 +205,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Выполняет else команду
+     *
      * @return $this
      */
     public function else(): ChainSession
@@ -203,6 +222,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Окончание else команды
+     *
      * @return $this
      */
     public function endElse(): ChainSession
@@ -216,12 +237,14 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param $start
-     * @param $stop
-     * @param $step
+     * Выполняет for команду
+     *
+     * @param  int  $start старт счетчика
+     * @param  int  $stop окончание счетчика
+     * @param  int  $step шаг счетчик, по умолчанию равен 1
      * @return $this
      */
-    public function for($start, $stop, $step = 1): ChainSession
+    public function for(int $start, int $stop, int $step = 1): ChainSession
     {
         $newFor = new CommandFor($start, $stop, $step);
         if ($this->deepLevel == 0) {
@@ -239,6 +262,8 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * окончание for команды
+     *
      * @return $this
      */
     public function endFor(): ChainSession
@@ -250,11 +275,13 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param $con
-     * @param $output
+     * Возвращает контекст выполнения сессии
+     *
+     * @param  array  $con При обращении параметр не указывается
+     * @param  array  $output При обращении параметр не указывается
      * @return array|array[]
      */
-    public function getExecContext($con = [], array $output = ['command' => [], 'exit_code' => [], 'output' => []]): array
+    public function getExecContext(array $con = [], array $output = ['command' => [], 'exit_code' => [], 'output' => []]): array
     {
         if ($con == []) {
             $con = $this->chainContext;
@@ -275,11 +302,16 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param array $workflow
-     * @return bool|WorkflowTypeOrderException
+     * Проверяет workflow на следование правилам построения потока выполнения
+     *
+     * @internal
+     *
+     * @param  array  $workflow текущий поток исполнения
+     *
+     * @throws WorkflowTypeOrderException
      * @throws WorkflowTypeOrderException
      */
-    private function checkWorkFlow(array $workflow): bool|WorkflowTypeOrderException
+    private function checkWorkFlow(array $workflow): bool
     {
         $rules = require __DIR__.'/Commands/Rules/Rules.php';
         for ($i = 0; $i < count($workflow) - 1; $i++) {
@@ -294,7 +326,9 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param string $name
+     * Определяет старт функции
+     *
+     * @param  string  $name наименование функции
      * @return $this
      */
     public function declareFunction(string $name): ChainSession
@@ -305,8 +339,9 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param string $name
-     * @return void
+     * Определяет конец функции
+     *
+     * @param  string  $name наименование функции
      */
     public function endFunction(string $name): void
     {
@@ -316,8 +351,11 @@ class ChainSession extends AbstractSession
     }
 
     /**
-     * @param string $name
+     * Использует функцию с переданным именем
+     *
+     * @param  string  $name имя используемой функции
      * @return $this
+     *
      * @throws WorkflowTypeOrderException
      */
     public function useFunction(string $name): ChainSession
@@ -332,7 +370,10 @@ class ChainSession extends AbstractSession
     }
 
     /**
+     * Применяет всю цепочку команд в рамках сессии
+     *
      * @return $this
+     *
      * @throws WorkflowTypeOrderException
      */
     public function apply(): ChainSession
