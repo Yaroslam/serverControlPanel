@@ -48,8 +48,8 @@ abstract class CommandBase
      */
     abstract public function execution($shell);
 }
-// типы команд: single->exec, block->then,else,while,case,for operator->if,switch, Non->заглушка
-// блоки хранят массив других команд, операторы хранят условия выполнения команд и другие команды
+// типы команд: single->exec, block->then,else,while,case operator->if,switch,for Non->заглушка
+// блоки хранят массив других команд, операторы управляют поведением workflow
 // топ левел команды: if, exec, while, switch
 // команды нижних уровней: then, else, case, exec
 // зависимость оператор->тело if->then, if->else, while->all, switch->case

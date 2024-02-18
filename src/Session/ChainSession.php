@@ -7,10 +7,12 @@ use Yaroslam\SSH2\Session\Commands\CommandElse;
 use Yaroslam\SSH2\Session\Commands\CommandExec;
 use Yaroslam\SSH2\Session\Commands\CommandFor;
 use Yaroslam\SSH2\Session\Commands\CommandIf;
+use Yaroslam\SSH2\Session\Commands\CommandSwitch;
 use Yaroslam\SSH2\Session\Commands\CommandThen;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndForCommand;
 use Yaroslam\SSH2\Session\Commands\EndIfCommand;
+use Yaroslam\SSH2\Session\Commands\EndSwitchCommand;
 use Yaroslam\SSH2\Session\Commands\EndThenCommand;
 use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 
@@ -51,17 +53,26 @@ class ChainSession extends AbstractSession
     /**
      * @var array массив, хранящий глобальный список операторов, согласно их глубине
      */
-    private array $operatorsGraph;
+    public array $operatorsGraph;
 
     /**
      * @var array массив, хранящий список блоков, согласно их глубине
      */
-    private array $blockGraph;
+    public array $blockGraph;
 
     /**
      * @var string глобальное наименование текущего блока
      */
     private string $currBlock;
+
+    /**
+     * @var int глобальный номер текущего case
+     */
+    private int $currCaseCounter;
+
+    private int $currForCounter;
+
+    private int $globalForCounter;
 
     /**
      * @var array глобальный список типов команд, согласно порядку их выполнения
@@ -92,6 +103,9 @@ class ChainSession extends AbstractSession
         $this->functions = [];
         $this->chainContext = [];
         $this->chainCommands = [];
+        $this->currCaseCounter = 0;
+        $this->currForCounter = 0;
+        $this->globalForCounter = 0;
 
         return $this;
     }
@@ -253,7 +267,9 @@ class ChainSession extends AbstractSession
             $this->lastCommand->addToBody($newFor);
         }
         $this->lastCommand = $newFor;
-        $this->currBlock = $this->deepLevel.'.for';
+        $this->globalForCounter += 1;
+        $this->currForCounter = $this->globalForCounter;
+        $this->currBlock = $this->deepLevel.'.for.'.$this->currForCounter;
         $this->deepLevel += 1;
         $this->blockGraph[$this->currBlock] = $this->lastCommand;
         $this->workFlowTypes[] = $newFor->getCommandType();
@@ -266,10 +282,59 @@ class ChainSession extends AbstractSession
      *
      * @return $this
      */
+    //доделать
     public function endFor(): ChainSession
+    {
+        $this->currForCounter -= 1;
+        $this->deepLevel -= 1;
+        $this->currBlock = ! getPrevArrayKey($this->blockGraph, $this->currBlock) ?
+            $this->currBlock : getPrevArrayKey($this->blockGraph, $this->currBlock);
+        var_dump($this->currBlock);
+        $this->workFlowTypes[] = EndSwitchCommand::getCommandType();
+
+        return $this;
+    }
+
+    public function switch(string $cmdCommand, bool $breakable = true, int $timeout = 4): ChainSession
+    {
+        $newSwitch = new CommandSwitch($cmdCommand, $breakable, $timeout);
+        if ($this->deepLevel == 0) {
+            $this->chainCommands[] = $newSwitch;
+        } else {
+            $this->lastCommand->addToBody($newSwitch);
+        }
+        $this->deepLevel += 1;
+        $this->operatorsGraph[$this->deepLevel] = $newSwitch;
+        $this->workFlowTypes[] = $newSwitch->getCommandType();
+
+        return $this;
+    }
+
+    public function endSwitch(): ChainSession
     {
         $this->deepLevel -= 1;
         $this->workFlowTypes[] = EndForCommand::getCommandType();
+
+        return $this;
+    }
+
+    public function case(string $caseStatement): ChainSession
+    {
+        $this->lastCommand = new CommandCase($caseStatement);
+        $this->currCaseCounter += 1;
+        $this->currBlock = $this->deepLevel.'.case'.$this->currCaseCounter;
+        $this->blockGraph[$this->currBlock] = $this->lastCommand;
+        $this->deepLevel += 1;
+        $this->workFlowTypes[] = $this->lastCommand->getCommandType();
+
+        return $this;
+    }
+
+    public function endCase()
+    {
+        $this->deepLevel -= 1;
+        $this->operatorsGraph[$this->deepLevel]->addToBody($this->blockGraph[$this->deepLevel.'.case'.$this->currCaseCounter]);
+        $this->currCaseCounter -= 1;
 
         return $this;
     }
