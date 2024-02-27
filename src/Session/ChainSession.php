@@ -9,6 +9,7 @@ use Yaroslam\SSH2\Session\Commands\CommandFor;
 use Yaroslam\SSH2\Session\Commands\CommandIf;
 use Yaroslam\SSH2\Session\Commands\CommandSwitch;
 use Yaroslam\SSH2\Session\Commands\CommandThen;
+use Yaroslam\SSH2\Session\Commands\EndCaseCommand;
 use Yaroslam\SSH2\Session\Commands\EndElseCommand;
 use Yaroslam\SSH2\Session\Commands\EndForCommand;
 use Yaroslam\SSH2\Session\Commands\EndIfCommand;
@@ -73,7 +74,7 @@ class ChainSession extends AbstractSession
     /**
      * @var int глобальный номер текущего case
      */
-    private int $currCaseCounter;
+    private int $globalCaseCounter;
 
     /**
      * @var int глобальный номер текущего for
@@ -95,6 +96,10 @@ class ChainSession extends AbstractSession
      */
     private int $globalElseCounter;
 
+    /**
+     * @var int глобальный номер текущего switch
+     */
+    private int $globalSwitchCounter;
 
     /**
      * @var array стэк глубины обращения к блокам
@@ -130,11 +135,12 @@ class ChainSession extends AbstractSession
         $this->functions = [];
         $this->chainContext = [];
         $this->chainCommands = [];
-        $this->currCaseCounter = 0;
+        $this->globalCaseCounter = 0;
         $this->globalForCounter = 0;
         $this->globalIfCounter = 0;
         $this->globalThenCounter = 0;
         $this->globalElseCounter = 0;
+        $this->globalSwitchCounter = 0;
         $this->currOperator = '';
         $this->blockStack = [];
 
@@ -339,9 +345,10 @@ class ChainSession extends AbstractSession
 
     /**
      * Выполняет switch команду
-     * @param string $cmdCommand текст выполняемой команды
-     * @param bool $breakable будет ли выход после первого совпадения в case или нет
-     * @param int $timeout задержка перед выполнением
+     *
+     * @param  string  $cmdCommand текст выполняемой команды
+     * @param  bool  $breakable будет ли выход после первого совпадения в case или нет
+     * @param  int  $timeout задержка перед выполнением
      * @return $this
      */
     public function switch(string $cmdCommand, bool $breakable = true, int $timeout = 4): ChainSession
@@ -353,6 +360,8 @@ class ChainSession extends AbstractSession
             $this->lastCommand->addToBody($newSwitch);
         }
         $this->deepLevel += 1;
+        $this->globalSwitchCounter +=1;
+        $this->currOperator = $this->deepLevel.'.switch.'.$this->globalSwitchCounter;
         $this->operatorsGraph[$this->currOperator] = $newSwitch;
         $this->workFlowTypes[] = $newSwitch->getCommandType();
 
@@ -361,25 +370,29 @@ class ChainSession extends AbstractSession
 
     /**
      * Окончание switch команды
+     *
      * @return $this
      */
     public function endSwitch(): ChainSession
     {
         $this->deepLevel -= 1;
-        $this->workFlowTypes[] = EndForCommand::getCommandType();
+        $this->currOperator = ! getPrevArrayKey($this->operatorsGraph, $this->currOperator) ?
+            $this->currOperator : getPrevArrayKey($this->operatorsGraph, $this->currOperator);
+        $this->workFlowTypes[] = EndSwitchCommand::getCommandType();
 
         return $this;
     }
 
     /**
-     * @param string $caseStatement
+     * Выполняет case команду
+     * @param string $caseStatement утверждение с которым будет сравниваться результат выполнения switch
      * @return $this
      */
     public function case(string $caseStatement): ChainSession
     {
         $this->lastCommand = new CommandCase($caseStatement);
-        $this->currCaseCounter += 1;
-        $this->currBlock = $this->deepLevel.'.case'.$this->currCaseCounter;
+        $this->globalCaseCounter += 1;
+        $this->currBlock = $this->deepLevel.'.case'.$this->globalCaseCounter;
         $this->blockGraph[$this->currBlock] = $this->lastCommand;
         $this->blockStack[] = $this->currBlock;
         $this->deepLevel += 1;
@@ -390,6 +403,7 @@ class ChainSession extends AbstractSession
 
     /**
      * окончание case команды
+     *
      * @return $this
      */
     public function endCase()
@@ -398,7 +412,7 @@ class ChainSession extends AbstractSession
         $lastBlock = array_pop($this->blockStack);
         $this->currBlock = count($this->blockStack) == 0 ? '' : $this->blockStack[array_key_last($this->blockStack)];
         $this->operatorsGraph[$this->currOperator]->addToBody($this->blockGraph[$lastBlock]);
-        $this->currCaseCounter -= 1;
+        $this->workFlowTypes[] = EndCaseCommand::getCommandType();
 
         return $this;
     }

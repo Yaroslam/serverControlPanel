@@ -58,7 +58,6 @@ class CommandFor extends CommandBase
     {
 
         for ($i = $this->forStart; $i < $this->forStop; $i += $this->forStep) {
-            var_dump($i.' step');
             foreach ($this->body as $command) {
                 $this->addToContext($command->execution($shell));
             }

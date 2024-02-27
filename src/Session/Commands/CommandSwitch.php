@@ -43,7 +43,7 @@ class CommandSwitch extends CommandBase
     }
 
     /**
-     * Выполеняет переданную команду, после ее выполнения проверяет все внутренние case на соответствие их условиям
+     * Выполняет переданную команду, после ее выполнения проверяет все внутренние case на соответствие их условиям
      *
      * @api
      *
@@ -61,9 +61,9 @@ class CommandSwitch extends CommandBase
             /* @var $case CommandCase */
             $caseStatement = $case->getStatement();
             if (preg_match("/$caseStatement/", $outLine)) {
-                $this->addToBody($case->execution($shell));
+                $this->addToContext($case->execution($shell));
                 if ($this->breakable) {
-                    break;
+                    return $this->getContext();
                 }
             }
         }

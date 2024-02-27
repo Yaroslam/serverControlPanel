@@ -52,10 +52,7 @@ class CommandExec extends CommandBase
      */
     public function execution($shell): array
     {
-
         $outArr = [];
-
-        var_dump('exec '.$this->commandText);
         fwrite($shell, $this->commandText.';echo -e "\n$?"'.PHP_EOL);
         sleep($this->timeout);
         $outLine = '';
