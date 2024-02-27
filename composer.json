@@ -1,6 +1,6 @@
 {
     "name": "yaroslam/ssh2",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
