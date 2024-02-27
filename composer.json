@@ -17,5 +17,7 @@
     "require": {
         "ext-ssh2": "*",
         "php": "^8.1"
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
