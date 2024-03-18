@@ -20,7 +20,6 @@ use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 /**
  * Класс сессии, которая сохраняет состояние между вызовами и может пользоваться всеми командами
  *
- * @todo добавить case switch
  */
 class ChainSession extends AbstractSession
 {

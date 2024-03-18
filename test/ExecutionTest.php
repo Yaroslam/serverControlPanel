@@ -12,9 +12,9 @@ class ExecutionTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->session = new Session(new UserPasswordConnection(), ['port' => 22, 'host' => '194.87.110.114',
+        $this->session = new Session(new UserPasswordConnection(), ['port' => 22, 'host' => '',
             'properties' => ['user' => '', 'password' => '']]);
-        $this->chainSession = new ChainSession(new UserPasswordConnection(), ['port' => 22, 'host' => '194.87.110.114',
+        $this->chainSession = new ChainSession(new UserPasswordConnection(), ['port' => 22, 'host' => '',
             'properties' => ['user' => '', 'password' => '']]);
     }
 
