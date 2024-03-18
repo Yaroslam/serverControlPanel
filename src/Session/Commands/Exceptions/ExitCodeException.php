@@ -12,6 +12,4 @@ class ExitCodeException extends \Exception
         parent::__construct();
         $this->message = "$command raise exit code $exitCode";
     }
-
-
 }

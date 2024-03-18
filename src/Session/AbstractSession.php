@@ -17,8 +17,9 @@ abstract class AbstractSession
 
     /**
      * Конструктор класса
-     * @param ConnectionInterface $connectionType тип подключения
-     * @param array $connectProperties настройки подключения
+     *
+     * @param  ConnectionInterface  $connectionType тип подключения
+     * @param  array  $connectProperties настройки подключения
      */
     public function __construct(ConnectionInterface $connectionType, array $connectProperties)
     {
@@ -26,22 +27,15 @@ abstract class AbstractSession
         $this->connector->connect();
     }
 
-
-    /**
-     * @return mixed
-     */
     abstract public function apply(): mixed;
 
     /**
      * Выполняет exec команду с переданным текстом команды
-     * @param string $cmdCommand текст команды
-     * @return AbstractSession
+     *
+     * @param  string  $cmdCommand текст команды
      */
     abstract public function exec(string $cmdCommand): AbstractSession;
 
-    /**
-     *
-     */
     public function __destruct()
     {
         $this->connector->disconnect();

@@ -17,6 +17,7 @@ class CommandCase extends CommandBase
      * @var CommandClasses тип команды
      */
     protected CommandClasses $commandType = CommandClasses::Block;
+
     /**
      * @var string Условие выполнения тела case команды
      */
@@ -24,27 +25,28 @@ class CommandCase extends CommandBase
 
     /**
      * Конструктор команды
-     * @param string $caseStatement Условие выполнения тела case команды
+     *
+     * @param  string  $caseStatement Условие выполнения тела case команды
      */
-    public function __construct(string $caseStatement) {
+    public function __construct(string $caseStatement)
+    {
         $this->caseStatement = $caseStatement;
     }
 
     /**
      * Возвращает условие выполнения case команды
+     *
      * @api
-     * @return string
      */
-    public function getStatement(): string {
+    public function getStatement(): string
+    {
         return $this->caseStatement;
     }
 
-
     /**
      * Добавляет все команды тела во внутренний контекст выполнения
+     *
      * @api
-     * @param $shell
-     * @return array
      */
     public function execution($shell): array
     {

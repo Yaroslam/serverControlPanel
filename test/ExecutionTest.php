@@ -43,6 +43,4 @@ class ExecutionTest extends TestCase
         $this->expectException(ExitCodeException::class);
         $this->chainSession->initChain()->exec('echoss test')->apply();
     }
-
-
 }

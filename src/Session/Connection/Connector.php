@@ -34,8 +34,9 @@ class Connector
 
     /**
      * Конструктор класса
-     * @param ConnectionInterface $connection тип подключения
-     * @param array $connectProperties настройки подключения
+     *
+     * @param  ConnectionInterface  $connection тип подключения
+     * @param  array  $connectProperties настройки подключения
      */
     public function __construct(ConnectionInterface $connection, array $connectProperties)
     {
@@ -47,7 +48,6 @@ class Connector
 
     /**
      * Выполняет подключение, согласно всем настройкам класса
-     * @return void
      */
     public function connect(): void
     {
@@ -57,6 +57,7 @@ class Connector
 
     /**
      * Возвращает ресурс ssh2 подключения
+     *
      * @return resource
      */
     public function getSsh2Connect()
@@ -66,7 +67,6 @@ class Connector
 
     /**
      * Выполняет дисконект
-     * @return bool
      */
     public function disconnect(): bool
     {

@@ -14,9 +14,10 @@ trait HasContext
 
     /**
      * Добавление контекста во внутренний
+     *
      * @api
-     * @param mixed $context контекст выполнения команды
-     * @return void
+     *
+     * @param  mixed  $context контекст выполнения команды
      */
     public function addToContext(mixed $context): void
     {
@@ -25,8 +26,8 @@ trait HasContext
 
     /**
      * Возвращает контекст выполнения
+     *
      * @api
-     * @return array
      */
     public function getContext(): array
     {

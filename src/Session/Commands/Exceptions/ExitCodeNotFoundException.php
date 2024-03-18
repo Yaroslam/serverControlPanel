@@ -12,5 +12,4 @@ class ExitCodeNotFoundException extends \Exception
         parent::__construct();
         $this->message = "output didn't contain return status command => $command";
     }
-
 }

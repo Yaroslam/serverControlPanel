@@ -360,7 +360,7 @@ class ChainSession extends AbstractSession
             $this->lastCommand->addToBody($newSwitch);
         }
         $this->deepLevel += 1;
-        $this->globalSwitchCounter +=1;
+        $this->globalSwitchCounter += 1;
         $this->currOperator = $this->deepLevel.'.switch.'.$this->globalSwitchCounter;
         $this->operatorsGraph[$this->currOperator] = $newSwitch;
         $this->workFlowTypes[] = $newSwitch->getCommandType();
@@ -385,7 +385,8 @@ class ChainSession extends AbstractSession
 
     /**
      * Выполняет case команду
-     * @param string $caseStatement утверждение с которым будет сравниваться результат выполнения switch
+     *
+     * @param  string  $caseStatement утверждение с которым будет сравниваться результат выполнения switch
      * @return $this
      */
     public function case(string $caseStatement): ChainSession

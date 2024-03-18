@@ -24,9 +24,9 @@ class Session extends AbstractSession
         $this->context = ['output' => trim(stream_get_contents($stream)), 'error' => trim(stream_get_contents($errorStream))];
         fclose($errorStream);
         fclose($stream);
+
         return $this;
     }
-
 
     /**
      * Возвращает контекст выполнения подключения

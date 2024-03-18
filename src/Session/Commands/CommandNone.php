@@ -14,7 +14,6 @@ class CommandNone extends CommandBase
     protected CommandClasses $commandType = CommandClasses::None;
 
     /**
-     * @param $shell
      * @return null
      */
     public function execution($shell)

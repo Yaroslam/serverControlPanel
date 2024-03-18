@@ -3,6 +3,7 @@
 namespace Yaroslam\SSH2\Session\Commands\Exceptions;
 
 use Exception;
+
 /**
  * Ошибка неверного построения потока выполнения команд
  */

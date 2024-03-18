@@ -16,9 +16,10 @@ trait HasBody
 
     /**
      * Добавление команды в тело
+     *
      * @api
-     * @param CommandBase $command команда, которая будет добавлена в тело
-     * @return void
+     *
+     * @param  CommandBase  $command команда, которая будет добавлена в тело
      */
     public function addToBody(CommandBase $command): void
     {

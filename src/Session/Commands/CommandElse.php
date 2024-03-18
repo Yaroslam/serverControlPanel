@@ -20,9 +20,8 @@ class CommandElse extends CommandBase
 
     /**
      * Выполняет все команды в своем теле
+     *
      * @api
-     * @param $shell
-     * @return array
      */
     public function execution($shell): array
     {

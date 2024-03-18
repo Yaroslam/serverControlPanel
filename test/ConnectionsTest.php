@@ -6,8 +6,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use Yaroslam\SSH2\Session\Connection\UserPasswordConnection;
 
-// TODO
-//  переменные в блоке документации
 class ConnectionsTest extends TestCase
 {
     public function testUserPasswordConn()
