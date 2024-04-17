@@ -42,8 +42,6 @@ class CommandExec extends CommandBase
     /**
      * Выполняет commandText в переданном shell
      *
-     * @api
-     *
      * @return array массив результатов работы команды формата
      * ['command' => commandText, 'exit_code' => код выполнения, output => вывод команды]
      *

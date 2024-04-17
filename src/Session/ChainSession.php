@@ -19,7 +19,6 @@ use Yaroslam\SSH2\Session\Commands\Exceptions\WorkflowTypeOrderException;
 
 /**
  * Класс сессии, которая сохраняет состояние между вызовами и может пользоваться всеми командами
- *
  */
 class ChainSession extends AbstractSession
 {
@@ -442,6 +441,31 @@ class ChainSession extends AbstractSession
         }
 
         return $output;
+    }
+
+    /**
+     * Сбрасывает сессию до начального состояния
+     *
+     * @return void
+     */
+    public function resetSession(): void
+    {
+        $this->shell = null;
+        $this->deepLevel = 0;
+        $this->operatorsGraph = [];
+        $this->blockGraph = [];
+        $this->workFlowTypes = [];
+        $this->functions = [];
+        $this->chainContext = [];
+        $this->chainCommands = [];
+        $this->globalCaseCounter = 0;
+        $this->globalForCounter = 0;
+        $this->globalIfCounter = 0;
+        $this->globalThenCounter = 0;
+        $this->globalElseCounter = 0;
+        $this->globalSwitchCounter = 0;
+        $this->currOperator = '';
+        $this->blockStack = [];
     }
 
     /**
