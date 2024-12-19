@@ -12,10 +12,10 @@ class ExecutionTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->session = new Session(new UserPasswordConnection(), ['port' => 22, 'host' => '',
-            'properties' => ['user' => '', 'password' => '']]);
-        $this->chainSession = new ChainSession(new UserPasswordConnection(), ['port' => 22, 'host' => '',
-            'properties' => ['user' => '', 'password' => '']]);
+        $this->session = new Session(new UserPasswordConnection(), ['port' => 22, 'host' => $_ENV['host'],
+            'properties' => ['user' => $_ENV['user'], 'password' => $_ENV['password']]]);
+        $this->chainSession = new ChainSession(new UserPasswordConnection(), ['port' => 22, 'host' => $_ENV['host'],
+            'properties' => ['user' => $_ENV['user'], 'password' => $_ENV['password']]]);
     }
 
     public function testDefaultSessionSingleExecutionNoError()

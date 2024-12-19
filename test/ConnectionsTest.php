@@ -11,7 +11,7 @@ class ConnectionsTest extends TestCase
     public function testUserPasswordConn()
     {
         $connector = new UserPasswordConnection();
-        $this->assertTrue($connector->connect(ssh2_connect('', 22),
-            ['user' => '', 'password' => '']), 'error during connect by password and login');
+        $this->assertTrue($connector->connect(ssh2_connect($_ENV['host'], 22),
+            ['user' => $_ENV['user'], 'password' => $_ENV['password']]), 'error during connect by password and login');
     }
 }
