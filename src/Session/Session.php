@@ -9,6 +9,9 @@ namespace Yaroslam\SSH2\Session;
  */
 class Session extends AbstractSession
 {
+
+
+
     /**
      * @var array<string, string> контекст выполнения
      */
