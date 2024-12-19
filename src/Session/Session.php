@@ -10,14 +10,13 @@ namespace Yaroslam\SSH2\Session;
 class Session extends AbstractSession
 {
     /**
-     * @var array контекст выполнения
+     * @var array<string, string> контекст выполнения
      */
     private array $context;
 
     public function exec(string $cmdCommand): AbstractSession
     {
         $stream = ssh2_exec($this->connector->getSsh2Connect(), $cmdCommand);
-        //передача стрима в функцию вызывает ошибку ???
         $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
         stream_set_blocking($errorStream, true);
         stream_set_blocking($stream, true);
@@ -30,6 +29,7 @@ class Session extends AbstractSession
 
     /**
      * Возвращает контекст выполнения подключения
+     * @return array<string, string>
      */
     public function apply(): array
     {

@@ -19,7 +19,7 @@ abstract class AbstractSession
      * Конструктор класса
      *
      * @param  ConnectionInterface  $connectionType тип подключения
-     * @param  array  $connectProperties настройки подключения
+     * @param  array<string, mixed>  $connectProperties настройки подключения
      */
     public function __construct(ConnectionInterface $connectionType, array $connectProperties)
     {

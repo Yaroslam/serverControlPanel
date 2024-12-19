@@ -1,7 +1,9 @@
 <?php
 
-//TODO переделать под стак
-function getPrevArrayKey($array, $needle): string|false
+/**
+ * @param array<int, mixed> $array
+ */
+function getPrevArrayKey(array $array, mixed $needle): mixed
 {
     $keys = array_keys($array);
     $index = array_search($needle, $keys);

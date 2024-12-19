@@ -28,7 +28,7 @@ class ChainSession extends AbstractSession
     private array $chainContext;
 
     /**
-     * @var resource ssh2 ресурс
+     * @var resource|false ssh2 ресурс
      */
     private $shell;
 
@@ -39,8 +39,6 @@ class ChainSession extends AbstractSession
 
     /**
      * @var CommandThen|CommandElse|CommandCase|CommandFor последняя добавленная команда
-     *
-     * @todo подумать над переименованием в ластБлок
      */
     private CommandThen|CommandElse|CommandCase|CommandFor $lastCommand;
 
@@ -55,12 +53,12 @@ class ChainSession extends AbstractSession
     private string $currOperator;
 
     /**
-     * @var array массив, хранящий глобальный список операторов, согласно их глубине
+     * @var array<int, CommandThen|CommandElse|CommandCase|CommandFor> массив, хранящий глобальный список операторов, согласно их глубине
      */
     public array $operatorsGraph;
 
     /**
-     * @var array массив, хранящий список блоков, согласно их глубине
+     * @var array<CommandThen|CommandElse|CommandCase|CommandFor> массив, хранящий список блоков, согласно их глубине
      */
     public array $blockGraph;
 
@@ -116,9 +114,6 @@ class ChainSession extends AbstractSession
 
     /**
      * Инициализирует сессию
-     *
-     * @api
-     *
      * @param  bool  $withFakeStart флаг запуска сессии с или без "нулевого старта". Если равен true, то старт состоится. Если равен false, то нет. По умолчанию равен true
      * @return $this
      */
